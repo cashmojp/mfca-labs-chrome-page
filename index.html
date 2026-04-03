@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MFCA Labs（Chrome拡張機能）プライバシーポリシー</title>
+    <meta
+      name="description"
+      content="MFCA Labs Chrome拡張機能のプライバシーポリシー。ユーザーデータの取り扱いについて説明します。"
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --text: #1a1a1a;
+        --muted: #555;
+        --bg: #fff;
+        --border: #ddd;
+        --link: #1a5490;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --text: #f0f0f0;
+          --muted: #b0b0b0;
+          --bg: #121212;
+          --border: #333;
+          --link: #9dc8ea;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 3rem;
+        font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans",
+          "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+        line-height: 1.7;
+        color: var(--text);
+        background: var(--bg);
+        max-width: 44rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        line-height: 1.35;
+        margin: 0 0 0.5rem;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+      }
+      h2 {
+        font-size: 1.15rem;
+        margin: 2rem 0 0.75rem;
+        padding-top: 0.25rem;
+        border-bottom: 1px solid var(--border);
+      }
+      p,
+      ul {
+        margin: 0 0 1rem;
+      }
+      ul {
+        padding-left: 1.35rem;
+      }
+      li {
+        margin-bottom: 0.35rem;
+      }
+      a {
+        color: var(--link);
+      }
+      .note {
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MFCA Labs（Chrome 拡張機能）プライバシーポリシー</h1>
+    <p class="meta">最終更新日: 2026年4月3日</p>
+
+    <p>
+      本ページは、Chrome 拡張機能「MFCA Labs」（以下「本拡張機能」）における利用者情報の取り扱いについて説明するものです。
+    </p>
+
+    <h2>1. 運営者・公開場所</h2>
+    <p>
+      本拡張機能のソースコードおよび公開・配布に関する問い合わせは、次のリポジトリをご利用ください。
+    </p>
+    <ul>
+      <li>
+        拡張機能リポジトリ:
+        <a
+          href="https://github.com/cashmojp/mfca-labo-chrome"
+          rel="noopener noreferrer"
+          >https://github.com/cashmojp/mfca-labo-chrome</a
+        >
+      </li>
+      <li>
+        本プライバシーポリシー（本ページ）のホスト用リポジトリ:
+        <a
+          href="https://github.com/cashmojp/mfca-labs-chrome-page"
+          rel="noopener noreferrer"
+          >https://github.com/cashmojp/mfca-labs-chrome-page</a
+        >
+      </li>
+    </ul>
+
+    <h2>2. 本拡張機能の概要</h2>
+    <p>
+      本拡張機能は、MF クラウド会計（Money Forward クラウド会計）の会計画面（<code>https://accounting.moneyforward.com</code>
+      ドメイン上のページ）において、日付入力のショートカット表示、および仕訳入力時の受取利息に関する金額の計算・入力欄への反映など、入力補助を行うためのものです。
+    </p>
+
+    <h2>3. 収集する情報</h2>
+    <p>
+      本拡張機能は、開発者が運用するサーバーに対して、利用者の個人を特定できる情報（氏名、メールアドレス、住所等）や会計データを<strong>送信・蓄積しません</strong>。本拡張機能にバックグラウンドでの通信を行うコードは含めていません。
+    </p>
+    <p>
+      入力補助のために、利用者のブラウザ内（端末内）で、当該会計画面のページ上に表示されているフォーム要素など（ウェブページの内容の一部）を読み取り、同一ページ上の入力欄へ値を書き込む場合があります。これらの処理は利用者の端末内で完結し、当該情報を開発者が取得するものではありません。
+    </p>
+
+    <h2>4. 利用目的</h2>
+    <p>
+      端末内での上記の参照・反映は、本拡張機能が提供する入力補助機能の提供に必要な範囲に限ります。広告配信、行動追跡、利用者プロファイルの作成、上記以外の目的での利用は行いません。
+    </p>
+
+    <h2>5. 第三者への提供</h2>
+    <p>
+      本拡張機能を通じて開発者が利用者情報を収集しないため、開発者による第三者への提供・販売は行いません。
+    </p>
+
+    <h2>6. 外部サービス・リモートコード</h2>
+    <p>
+      本拡張機能が実行するプログラムは、拡張機能パッケージに同梱されたファイルのみです。外部 URL からスクリプトを読み込んで実行する仕組みは用いていません。
+    </p>
+
+    <h2>7. ホスト権限（アクセスするサイト）</h2>
+    <p>
+      本拡張機能は、マニフェストで指定したマッチパターンに基づき、MF クラウド会計の該当ページにのみコンテンツスクリプトを注入します。他のウェブサイトを対象としません。詳細は公開しているソースコードおよびマニフェストをご確認ください。
+    </p>
+
+    <h2>8. お問い合わせ</h2>
+    <p>
+      本ポリシーおよび本拡張機能に関するご質問は、上記拡張機能リポジトリの Issues など、公開されている連絡手段からご連絡ください。
+    </p>
+
+    <h2>9. 本ポリシーの変更</h2>
+    <p>
+      法令の改正や本拡張機能の内容変更に伴い、本ポリシーを改定することがあります。改定後の内容は本ページに掲載した時点から効力を生じます。
+    </p>
+
+    <p class="note">
+      本拡張機能の利用にあたっては、Money Forward の各種サービス利用規約およびプライバシーに関する方針もあわせてご確認ください。
+    </p>
+  </body>
+</html>
