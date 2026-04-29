@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MFCA Labs（Chrome拡張機能）プライバシーポリシー</title>
+    <title>MFCA Labs — マネーフォワード クラウド会計向け Chrome 拡張機能</title>
     <meta
       name="description"
-      content="MFCA Labs Chrome拡張機能のプライバシーポリシー。ユーザーデータの取り扱いについて説明します。"
+      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタンを提供します。"
     />
     <style>
       :root {
@@ -14,16 +14,24 @@
         --text: #1a1a1a;
         --muted: #555;
         --bg: #fff;
+        --surface: #f6f7f9;
         --border: #ddd;
         --link: #1a5490;
+        --accent: #1a5490;
+        --accent-hover: #133f6e;
+        --shadow: rgba(0, 0, 0, 0.08);
       }
       @media (prefers-color-scheme: dark) {
         :root {
           --text: #f0f0f0;
           --muted: #b0b0b0;
           --bg: #121212;
+          --surface: #1e1e1e;
           --border: #333;
           --link: #9dc8ea;
+          --accent: #4a90d9;
+          --accent-hover: #6aaae4;
+          --shadow: rgba(0, 0, 0, 0.4);
         }
       }
       * {
@@ -31,125 +39,453 @@
       }
       body {
         margin: 0;
-        padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 3rem;
+        padding: 0;
         font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans",
           "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-        line-height: 1.7;
+        line-height: 1.75;
         color: var(--text);
         background: var(--bg);
-        max-width: 44rem;
       }
-      h1 {
-        font-size: 1.5rem;
-        line-height: 1.35;
-        margin: 0 0 0.5rem;
+
+      /* コンテナ */
+      .container {
+        max-width: 54rem;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 5vw, 3rem);
       }
-      .meta {
+
+      /* ヒーローセクション */
+      .hero {
+        background: #1a5490;
+        color: #fff;
+        padding: 3rem 0 3.5rem;
+      }
+      .hero-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .hero-logo span {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+      }
+      .hero h1 {
+        font-size: clamp(1.5rem, 4vw, 2.25rem);
+        font-weight: 700;
+        color: #fff;
+        margin: 1.25rem 0 0;
+        line-height: 1.4;
+      }
+      .hero-sub {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0.5rem 0 0;
+      }
+
+      /* CTAボタン（ヒーロー内） */
+      .btn-install {
+        display: inline-block;
+        background: #fff;
+        color: #1a5490;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.97rem;
+        padding: 0.7em 1.6em;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.15s;
+        margin-top: 1.5rem;
+      }
+      .btn-install:hover {
+        background: rgba(255, 255, 255, 0.88);
+        color: #1a5490;
+      }
+      @media (prefers-color-scheme: dark) {
+        .btn-install {
+          background: #fff;
+          color: #1a5490;
+        }
+        .btn-install:hover {
+          background: rgba(255, 255, 255, 0.88);
+          color: #1a5490;
+        }
+      }
+
+      /* メインコンテンツ */
+      main.container {
+        padding-top: 1.5rem;
+        padding-bottom: 4rem;
+      }
+
+      /* 機能サマリー帯 */
+      .features-band {
+        background: var(--surface);
+        margin-top: 0;
+        margin-right: calc(-1 * clamp(1rem, 5vw, 3rem));
+        margin-bottom: 2.5rem;
+        margin-left: calc(-1 * clamp(1rem, 5vw, 3rem));
+        padding: 1.75rem clamp(1rem, 5vw, 3rem);
+        border-radius: 10px;
+      }
+      .features-band h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 1.25rem;
+      }
+      .feature-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+        gap: 1rem;
+      }
+      .feature-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.25rem;
+        text-decoration: none;
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .feature-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 2px 12px var(--shadow);
+      }
+      .card-icon {
+        line-height: 1;
+      }
+      .card-title {
+        font-weight: 700;
+        font-size: 0.97rem;
+      }
+      .card-desc {
+        font-size: 0.88rem;
         color: var(--muted);
-        font-size: 0.9rem;
-        margin-bottom: 2rem;
+        line-height: 1.6;
+        margin: 0;
       }
-      h2 {
-        font-size: 1.15rem;
-        margin: 2rem 0 0.75rem;
-        padding-top: 0.25rem;
+
+      /* 重要事項 */
+      .important-notice {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 0;
+        font-size: 0.93rem;
+      }
+      .important-notice h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 1.25rem;
+        padding-bottom: 0.5rem;
         border-bottom: 1px solid var(--border);
       }
-      p,
-      ul {
-        margin: 0 0 1rem;
+      .important-notice h3 {
+        font-size: 0.97rem;
+        font-weight: 700;
+        margin: 1.25rem 0 0.4rem;
       }
-      ul {
-        padding-left: 1.35rem;
+      .important-notice h3:first-of-type {
+        margin-top: 0;
       }
-      li {
+      .important-notice p {
+        margin: 0 0 0.6rem;
+      }
+      .important-notice ul {
+        margin: 0 0 0.6rem;
+        padding-left: 1.4rem;
+      }
+      .important-notice li {
         margin-bottom: 0.35rem;
       }
+
+      /* セクション */
+      .section {
+        margin-bottom: 3rem;
+      }
+      .section h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border);
+        line-height: 1.4;
+      }
+      .section .section-desc {
+        margin: 0.75rem 0 1.25rem;
+        font-size: 0.97rem;
+      }
+      .section p {
+        margin: 0 0 1rem;
+      }
+
+      /* 機能メタ情報 */
+      .feature-meta {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        margin: 0.75rem 0 1.25rem;
+        font-size: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+      .feature-meta-row {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .feature-meta-label {
+        display: inline-block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.15em 0.55em;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--muted);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .feature-meta-value {
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+
+      /* スクリーンショット */
+      .screenshot {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px var(--shadow);
+        border: 1px solid var(--border);
+        margin: 1rem 0 1.5rem;
+      }
+      .screenshot-caption {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin: -0.75rem 0 1.5rem;
+        text-align: center;
+      }
+
+      /* 計算式ブロック */
+      .formula-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0 1.25rem;
+        font-size: 0.92rem;
+      }
+      .formula-block p {
+        margin: 0.25rem 0;
+      }
+      .formula-block code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+          monospace;
+        font-size: 0.9em;
+        background: var(--border);
+        padding: 0.1em 0.35em;
+        border-radius: 3px;
+      }
+
       a {
         color: var(--link);
-      }
-      .note {
-        font-size: 0.95rem;
-        color: var(--muted);
       }
     </style>
   </head>
   <body>
-    <h1>MFCA Labs（Chrome 拡張機能）プライバシーポリシー</h1>
-    <p class="meta">最終更新日: 2026年4月3日</p>
 
-    <p>
-      本ページは、Chrome 拡張機能「MFCA Labs」（以下「本拡張機能」）における利用者情報の取り扱いについて説明するものです。
-    </p>
-
-    <h2>1. 運営者・本ポリシーの公開</h2>
-    <p>
-      本ポリシーは次の URL で提供しています。
-    </p>
-    <ul>
-      <li>
+    <!-- ヒーローセクション -->
+    <header class="hero">
+      <div class="container">
+        <div class="hero-logo">
+          <img src="./icon.svg" width="36" height="36" alt="" />
+          <span>MFCA Labs</span>
+        </div>
+        <h1>マネーフォワード クラウド会計の<br>入力をもっとスムーズに</h1>
+        <p class="hero-sub">非公式 Chrome 拡張機能 ― 株式会社キャシュモ開発</p>
         <a
-          href="https://cashmojp.github.io/mfca-labs-chrome-page/"
+          href="https://chromewebstore.google.com/detail/mfca-labs/edpgggmdgeneaokhlinphdaphigiifca"
+          class="btn-install"
+          target="_blank"
           rel="noopener noreferrer"
-          >https://cashmojp.github.io/mfca-labs-chrome-page/</a
-        >
-      </li>
-    </ul>
-    <p>
-      本ページの HTML を公開しているリポジトリ:
-      <a
-        href="https://github.com/cashmojp/mfca-labs-chrome-page"
-        rel="noopener noreferrer"
-        >https://github.com/cashmojp/mfca-labs-chrome-page</a
-      >
-    </p>
+        >Chrome ウェブストアからインストール</a>
+      </div>
+    </header>
 
-    <h2>2. 本拡張機能の概要</h2>
-    <p>
-      本拡張機能は、MF クラウド会計（Money Forward クラウド会計）の会計画面（<code>https://accounting.moneyforward.com</code>
-      ドメイン上のページ）において、日付入力のショートカット表示、および仕訳入力時の受取利息に関する金額の計算・入力欄への反映など、入力補助を行うためのものです。
-    </p>
+    <!-- メインコンテンツ -->
+    <main class="container">
 
-    <h2>3. 収集する情報</h2>
-    <p>
-      本拡張機能は、開発者が運用するサーバーに対して、利用者の個人を特定できる情報（氏名、メールアドレス、住所等）や会計データを<strong>送信・蓄積しません</strong>。本拡張機能にバックグラウンドでの通信を行うコードは含めていません。
-    </p>
-    <p>
-      入力補助のために、利用者のブラウザ内（端末内）で、当該会計画面のページ上に表示されているフォーム要素など（ウェブページの内容の一部）を読み取り、同一ページ上の入力欄へ値を書き込む場合があります。これらの処理は利用者の端末内で完結し、当該情報を開発者が取得するものではありません。
-    </p>
+      <!-- 機能サマリー -->
+      <div class="features-band">
+        <h2>できること</h2>
+        <div class="feature-cards">
+          <a href="#feature-date" class="feature-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+              </svg>
+            </div>
+            <div class="card-title">日付ショートカット</div>
+            <p class="card-desc">「先月末」「先月初」などをワンクリックで日付欄に反映</p>
+          </a>
+          <a href="#feature-interest" class="feature-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <path d="M8 7h8M8 12h2M12 12h2M16 12h2M8 16h2M12 16h2M16 16h2"/>
+              </svg>
+            </div>
+            <div class="card-title">受取利息の自動計算</div>
+            <p class="card-desc">手取り額から受取利息と源泉税を逆算して仕訳フィールドへ自動入力</p>
+          </a>
+          <a href="#feature-search" class="feature-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"/>
+                <path d="M16.5 16.5L21 21"/>
+              </svg>
+            </div>
+            <div class="card-title">摘要の検索ボタン</div>
+            <p class="card-desc">連携サービスから入力の摘要をワンクリックで仕訳帳検索・Google 検索</p>
+          </a>
+          <!-- 機能カードをここに追加 -->
+        </div>
+      </div>
 
-    <h2>4. 利用目的</h2>
-    <p>
-      端末内での上記の参照・反映は、本拡張機能が提供する入力補助機能の提供に必要な範囲に限ります。広告配信、行動追跡、利用者プロファイルの作成、上記以外の目的での利用は行いません。
-    </p>
+      <!-- インストール後の設定 -->
+      <section class="section">
+        <h2>インストール後の設定</h2>
+        <p class="section-desc">
+          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「摘要の検索ボタン」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
+        </p>
+        <img
+          src="./mfca-labs-home-extension-popup-1280x800.png"
+          alt="ポップアップUI — 機能のオン/オフ切り替え画面"
+          class="screenshot"
+        />
+        <p class="screenshot-caption">ポップアップで各機能を個別に有効/無効にできます</p>
+      </section>
 
-    <h2>5. 第三者への提供</h2>
-    <p>
-      本拡張機能を通じて開発者が利用者情報を収集しないため、開発者による第三者への提供・販売は行いません。
-    </p>
+      <!-- 機能詳細①: 日付ショートカット -->
+      <section class="section" id="feature-date">
+        <h2>日付ショートカット</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">対象画面</span>
+            <span class="feature-meta-value">仕訳入力・検索など、日付入力欄がある全画面</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">起動タイミング</span>
+            <span class="feature-meta-value">日付入力欄をクリックしてカレンダーを開いたとき</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          日付入力欄（jQuery UI カレンダー）の付近に「先々月初」「先々月末」「先月初」「先月末」「今月初」「今月末」「今日」などのショートカットボタンが表示されます。ボタンをクリックするだけで、フォーカス中の日付欄に日付が直接反映されます。
+        </p>
+        <img
+          src="./mfca-labs-date-shortcuts-1280x800.png"
+          alt="日付ショートカット機能 — カレンダー付近にショートカットボタンが表示された画面"
+          class="screenshot"
+        />
+        <p class="screenshot-caption">日付入力欄の近くにショートカットボタンが表示されます</p>
+      </section>
 
-    <h2>6. 外部サービス・リモートコード</h2>
-    <p>
-      本拡張機能が実行するプログラムは、拡張機能パッケージに同梱されたファイルのみです。外部 URL からスクリプトを読み込んで実行する仕組みは用いていません。
-    </p>
+      <!-- 機能詳細②: 受取利息の自動計算 -->
+      <section class="section" id="feature-interest">
+        <h2>受取利息の自動計算</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">対象画面</span>
+            <span class="feature-meta-value">仕訳登録画面（連携サービスから展開した仕訳行を含む）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">起動タイミング</span>
+            <span class="feature-meta-value">貸方科目で「受取利息」を選択したとき</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          「利息計算」ボタンが表示されます。借方の入金額（手取り額）を入力してボタンをクリックすると、受取利息の総額と源泉所得税額を自動計算して各フィールドへ反映します。
+        </p>
 
-    <h2>7. ホスト権限（アクセスするサイト）</h2>
-    <p>
-      本拡張機能は、マニフェストで指定したマッチパターンに基づき、MF クラウド会計の該当ページにのみコンテンツスクリプトを注入します。他のウェブサイトを対象としません。
-    </p>
+        <div class="formula-block">
+          <p><strong>計算式</strong></p>
+          <p>手取り率: <code>1 − 15.315% = 0.84685</code></p>
+          <p>受取利息（総額）: <code>入金額 ÷ 0.84685（切り捨て）</code></p>
+          <p>源泉所得税額: <code>受取利息総額 − 入金額</code></p>
+        </div>
 
-    <h2>8. お問い合わせ</h2>
-    <p>
-      本拡張機能の利用・不具合などに関するお問い合わせは、Chrome ウェブストアに掲載されているデベロッパー連絡先をご利用ください。本ポリシーの文言に関するご指摘は、上記本ページ用の公開リポジトリの Issues にて受け付けます。
-    </p>
+        <img
+          src="./mfca-labs-interest-calculator-1280x800.png"
+          alt="受取利息の自動計算 — 利息計算ボタンの表示画面"
+          class="screenshot"
+        />
+        <p class="screenshot-caption">「利息計算」ボタンが表示されます</p>
 
-    <h2>9. 本ポリシーの変更</h2>
-    <p>
-      法令の改正や本拡張機能の内容変更に伴い、本ポリシーを改定することがあります。改定後の内容は本ページに掲載した時点から効力を生じます。
-    </p>
+      </section>
 
-    <p class="note">
-      本拡張機能の利用にあたっては、Money Forward の各種サービス利用規約およびプライバシーに関する方針もあわせてご確認ください。
-    </p>
+      <!-- 機能詳細③: 摘要の検索ボタン -->
+      <section class="section" id="feature-search">
+        <h2>摘要の検索ボタン</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">対象画面</span>
+            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">起動タイミング</span>
+            <span class="feature-meta-value">常時表示（各行の摘要セル付近）</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          連携サービスから入力の各行の摘要セル付近に「仕訳帳で検索」と「Google 検索」ボタンが表示されます。「仕訳帳で検索」は摘要テキストで絞り込み検索します。「Google 検索」は同じテキストで Google 検索を開きます。
+        </p>
+        <img
+          src="./mfca-labs-linked-services-input-1280x800.png"
+          alt="摘要の検索ボタン — 各行に仕訳帳で検索・Google検索ボタンが表示された画面"
+          class="screenshot"
+        />
+        <p class="screenshot-caption">各行の摘要セル付近に「仕訳帳」「Google」ボタンが表示されます</p>
+      </section>
+
+      <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
+
+      <!-- 重要事項のご案内 -->
+      <div class="important-notice">
+        <h2>本ツールに関する重要事項のご案内</h2>
+
+        <h3>1. 本ツールの位置づけについて</h3>
+        <p>
+          本ツールは株式会社キャシュモが開発したもので、マネーフォワード（MF）社の公式サービスではありません。将来的にMF本体への機能統合を検討する可能性はありますが、現時点では外部ツールとしての提供となります。
+        </p>
+
+        <h3>2. リリースにあたっての確認状況</h3>
+        <p>
+          本リリースの際、MF社のCISO室による技術的な確認を受けているほか、MF社の法務部門からも一定の条件（免責事項等）のもとで、外部への公表について了解を得ております。ただし、MF本体の仕様変更に追従できず、予告なく機能が利用できなくなる可能性がある点はあらかじめご了承ください。
+        </p>
+
+        <h3>3. セキュリティ・サポート面</h3>
+        <ul>
+          <li><strong>セキュリティ:</strong> 処理はすべて利用者のPC内で完結し、入力データ等が外部サーバーへアップロードされることはありません。</li>
+          <li><strong>サポート:</strong> 操作方法のレクチャーや不具合対応のサポート窓口は設けておりません。もしお気づきの点があれば、MF社の担当者を通じてフィードバックをいただけますと幸いです。</li>
+        </ul>
+
+        <h3>4. 今後の仕様変更・提供停止の可能性</h3>
+        <p>
+          利便性の向上を優先するため、今後も随時仕様変更を行ってまいります。その際、過去バージョンとの互換性を維持しない変更や、予告なく提供を停止する可能性もございます。継続的な動作を保証するものではない点をご理解の上、ご活用いただければと思います。
+        </p>
+      </div>
+
+    </main>
+
   </body>
 </html>
