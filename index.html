@@ -6,7 +6,7 @@
     <title>MFCA Labs — マネーフォワード クラウド会計向け Chrome 拡張機能</title>
     <meta
       name="description"
-      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタンを提供します。"
+      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額ドラッグ合計を提供します。"
     />
     <style>
       :root {
@@ -359,6 +359,16 @@
             <div class="card-title">摘要の検索ボタン</div>
             <p class="card-desc">連携サービスから入力の摘要をワンクリックで仕訳帳検索・Google 検索</p>
           </a>
+          <a href="#feature-amount" class="feature-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18M9 21V9M3 15h6"/>
+              </svg>
+            </div>
+            <div class="card-title">金額ドラッグ合計</div>
+            <p class="card-desc">仕訳帳・総勘定元帳・補助元帳の金額セルをドラッグ選択して合計をリアルタイム表示</p>
+          </a>
           <!-- 機能カードをここに追加 -->
         </div>
       </div>
@@ -456,6 +466,29 @@
           class="screenshot"
         />
         <p class="screenshot-caption">各行の摘要セル付近に「仕訳帳」「Google」ボタンが表示されます</p>
+      </section>
+
+      <section class="section" id="feature-amount">
+        <h2>金額ドラッグ合計</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">対象画面</span>
+            <span class="feature-meta-value">仕訳帳（/books）・総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">操作方法</span>
+            <span class="feature-meta-value">金額セルをドラッグで複数選択（Shift で追加選択）</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          仕訳帳・総勘定元帳・補助元帳の金額セルをドラッグして複数選択すると、選択した金額の合計が画面右下のバッジにリアルタイムで表示されます。Shift キーを押しながらドラッグすると選択を追加できます。金額セル以外をクリックすると選択が解除されます。
+        </p>
+        <img
+          src="./mfca-labs-subsidiary-ledger-1280x800.png"
+          alt="金額ドラッグ合計 — 補助元帳で金額セルを複数選択し右下に合計が表示された画面"
+          class="screenshot"
+        />
+        <p class="screenshot-caption">選択した金額セルの合計が右下のバッジにリアルタイム表示されます</p>
       </section>
 
       <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
