@@ -6,7 +6,7 @@
     <title>MFCA Labs — マネーフォワード クラウド会計向け Chrome 拡張機能</title>
     <meta
       name="description"
-      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額ドラッグ合計を提供します。"
+      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピーを提供します。"
     />
     <style>
       :root {
@@ -366,8 +366,8 @@
                 <path d="M3 9h18M9 21V9M3 15h6"/>
               </svg>
             </div>
-            <div class="card-title">金額ドラッグ合計</div>
-            <p class="card-desc">仕訳帳・総勘定元帳・補助元帳の金額セルをドラッグ選択して合計をリアルタイム表示</p>
+            <div class="card-title">金額の合計・コピー</div>
+            <p class="card-desc">右下の「合計」ボタンで合計モードをON、金額をドラッグ選択して合計を表示しダブルクリックでコピー</p>
           </a>
           <!-- 機能カードをここに追加 -->
         </div>
@@ -469,7 +469,7 @@
       </section>
 
       <section class="section" id="feature-amount">
-        <h2>金額ドラッグ合計</h2>
+        <h2>金額の合計・コピー</h2>
         <div class="feature-meta">
           <div class="feature-meta-row">
             <span class="feature-meta-label">対象画面</span>
@@ -477,18 +477,18 @@
           </div>
           <div class="feature-meta-row">
             <span class="feature-meta-label">操作方法</span>
-            <span class="feature-meta-value">金額セルをドラッグで複数選択（Shift で追加選択）</span>
+            <span class="feature-meta-value">右下の「合計」ボタンでモードON → 金額セルをドラッグ選択（Shift で追加） → 合計をダブルクリックでコピー</span>
           </div>
         </div>
         <p class="section-desc">
-          仕訳帳・総勘定元帳・補助元帳の金額セルをドラッグして複数選択すると、選択した金額の合計が画面右下のバッジにリアルタイムで表示されます。Shift キーを押しながらドラッグすると選択を追加できます。金額セル以外をクリックすると選択が解除されます。
+          仕訳帳・総勘定元帳・補助元帳の画面右下に「合計」ボタンが常駐します。通常時はクラウド会計本来の操作感を維持し、ボタンをクリックした時のみ金額ドラッグ選択モードがONになります。モード中に金額セルをドラッグすると選択中の合計金額と件数がリアルタイムで表示され、合計の数値をダブルクリックするとクリップボードへコピーされます。Esc を1回押すと選択クリア、選択なし状態で Esc を押すとモード終了です。
         </p>
         <img
-          src="./mfca-labs-subsidiary-ledger-1280x800.png"
-          alt="金額ドラッグ合計 — 補助元帳で金額セルを複数選択し右下に合計が表示された画面"
+          src="./mfca-labs-amount-total-button-1280x800.png"
+          alt="金額の合計・コピー — 右下のバッジに合計とコピー機能が表示された画面"
           class="screenshot"
         />
-        <p class="screenshot-caption">選択した金額セルの合計が右下のバッジにリアルタイム表示されます</p>
+        <p class="screenshot-caption">右下の「合計」ボタンでモードON → 金額をドラッグ選択 → ダブルクリックでクリップボードへコピー</p>
       </section>
 
       <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
