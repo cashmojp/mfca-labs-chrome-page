@@ -6,7 +6,7 @@
     <title>MFCA Labs — マネーフォワード クラウド会計向け Chrome 拡張機能</title>
     <meta
       name="description"
-      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピーを提供します。"
+      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピー・仕訳のコピーを提供します。"
     />
     <style>
       :root {
@@ -387,7 +387,7 @@
               </svg>
             </div>
             <div class="card-title">仕訳のコピー</div>
-            <p class="card-desc">仕訳一覧の各行にコピーボタンを追加。日付・連携元・摘要・金額をワンクリックでクリップボードへ</p>
+            <p class="card-desc">仕訳一覧・仕訳帳・元帳など5画面に対応。1行コピーと選択コピー（複数行一括）の2モードで相手勘定つき整形コピーを提供</p>
           </a>
           <!-- 機能カードをここに追加 -->
         </div>
@@ -517,23 +517,36 @@
         <div class="feature-meta">
           <div class="feature-meta-row">
             <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）</span>
+            <span class="feature-meta-value">仕訳一覧（/transaction_journals）・仕訳帳（/books）・総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）・振替伝票（/journal_entry）</span>
           </div>
           <div class="feature-meta-row">
-            <span class="feature-meta-label">操作方法</span>
-            <span class="feature-meta-value">各仕訳行のコピーボタンをクリック</span>
+            <span class="feature-meta-label">操作方法（1行コピー）</span>
+            <span class="feature-meta-value">各行の⋮付近に表示されるコピーアイコンをクリック（前期繰越など対象外行を除く）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">操作方法（選択コピー）</span>
+            <span class="feature-meta-value">「選択コピー」トグルをONにして行をクリック選択（Shiftで範囲選択可）→ 右下バッジの「N件をコピー」をクリック</span>
           </div>
         </div>
         <p class="section-desc">
-          連携サービスから入力の各仕訳行に「コピー」ボタンが表示されます。クリックすると <code>YYYY/MM/DD 連携元 摘要 出金/入金 金額</code> の形式でクリップボードへコピーされます。コピー後はボタンが「✓」に変わり、2秒後に元に戻ります。
+          全5画面に対応した仕訳コピー機能です。デフォルトでは MF クラウド会計本来の操作感をそのまま維持し、明示的なトリガー（コピーアイコン・選択コピートグル）を操作したときのみ有効になります。
+        </p>
+        <p class="section-desc">
+          <strong>1行コピー</strong>: 各行の⋮（メニュー）付近に表示されるコピーアイコンをクリックすると、その行の仕訳内容をクリップボードへコピーします。コピー後はアイコンが「✓」に変わり、2秒後に自動復帰します。
+        </p>
+        <p class="section-desc">
+          <strong>選択コピー（複数行一括）</strong>: 上部の「選択コピー」トグルをONにするとモードが起動します。行をクリックして選択（Shift+クリックで範囲選択も可能）し、右下に表示されるバッジの「N件をコピー」をクリックすると、選択行を一括で整形コピーします。複合仕訳グループもグループ単位で正しく処理されます。Esc を押すと選択クリア、選択なし状態でもう一度 Esc を押すとモードを終了します。
+        </p>
+        <p class="section-desc">
+          <strong>コピーフォーマット（相手勘定つき整形）</strong>: 元帳系は <code>YYYY/MM/DD 相手勘定 摘要 金額 出金/入金</code>、仕訳帳・振替伝票は <code>YYYY/MM/DD 借方科目／貸方科目 摘要 金額</code>、仕訳一覧は <code>YYYY/MM/DD 金融機関 摘要 金額 出金/入金</code> の形式で出力されます（金額は円単位付き）。
         </p>
         <img
           class="screenshot"
           src="mfca-labs-journal-copy-1280x800.png"
-          alt="仕訳のコピー — 各仕訳行にコピーボタンが表示された画面"
+          alt="仕訳のコピー — 各仕訳行にコピーアイコンと選択コピートグルが表示された画面"
           loading="lazy"
         />
-        <p class="screenshot-caption">各仕訳行の右端に「コピー」ボタンが表示されます</p>
+        <p class="screenshot-caption">各行の⋮付近にコピーアイコンが表示されます。「選択コピー」トグルで複数行一括コピーモードに切り替えられます</p>
       </section>
 
       <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
