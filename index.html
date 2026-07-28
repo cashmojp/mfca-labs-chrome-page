@@ -6,310 +6,9 @@
     <title>MFCA Labs — マネーフォワード クラウド会計向け Chrome 拡張機能</title>
     <meta
       name="description"
-      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピー・仕訳のコピーを提供します。"
+      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピー・仕訳のコピー・科目リンクの一括オープンを提供します。"
     />
-    <style>
-      :root {
-        color-scheme: light dark;
-        --text: #1a1a1a;
-        --muted: #555;
-        --bg: #fff;
-        --surface: #f6f7f9;
-        --border: #ddd;
-        --link: #1a5490;
-        --accent: #1a5490;
-        --accent-hover: #133f6e;
-        --shadow: rgba(0, 0, 0, 0.08);
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --text: #f0f0f0;
-          --muted: #b0b0b0;
-          --bg: #121212;
-          --surface: #1e1e1e;
-          --border: #333;
-          --link: #9dc8ea;
-          --accent: #4a90d9;
-          --accent-hover: #6aaae4;
-          --shadow: rgba(0, 0, 0, 0.4);
-        }
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans",
-          "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-        line-height: 1.75;
-        color: var(--text);
-        background: var(--bg);
-      }
-
-      /* コンテナ */
-      .container {
-        max-width: 54rem;
-        margin: 0 auto;
-        padding: 0 clamp(1rem, 5vw, 3rem);
-      }
-
-      /* ヒーローセクション */
-      .hero {
-        background: #1a5490;
-        color: #fff;
-        padding: 3rem 0 3.5rem;
-      }
-      .hero-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-      .hero-logo span {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #fff;
-      }
-      .hero h1 {
-        font-size: clamp(1.5rem, 4vw, 2.25rem);
-        font-weight: 700;
-        color: #fff;
-        margin: 1.25rem 0 0;
-        line-height: 1.4;
-      }
-      .hero-sub {
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.75);
-        margin: 0.5rem 0 0;
-      }
-
-      /* CTAボタン（ヒーロー内） */
-      .btn-install {
-        display: inline-block;
-        background: #fff;
-        color: #1a5490;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.97rem;
-        padding: 0.7em 1.6em;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: background 0.15s;
-        margin-top: 1.5rem;
-      }
-      .btn-install:hover {
-        background: rgba(255, 255, 255, 0.88);
-        color: #1a5490;
-      }
-      @media (prefers-color-scheme: dark) {
-        .btn-install {
-          background: #fff;
-          color: #1a5490;
-        }
-        .btn-install:hover {
-          background: rgba(255, 255, 255, 0.88);
-          color: #1a5490;
-        }
-      }
-
-      /* メインコンテンツ */
-      main.container {
-        padding-top: 1.5rem;
-        padding-bottom: 4rem;
-      }
-
-      /* 機能サマリー帯 */
-      .features-band {
-        background: var(--surface);
-        margin-top: 0;
-        margin-right: calc(-1 * clamp(1rem, 5vw, 3rem));
-        margin-bottom: 2.5rem;
-        margin-left: calc(-1 * clamp(1rem, 5vw, 3rem));
-        padding: 1.75rem clamp(1rem, 5vw, 3rem);
-        border-radius: 10px;
-      }
-      .features-band h2 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 0 0 1.25rem;
-      }
-      .feature-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-        gap: 1rem;
-      }
-      .feature-card {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 1.25rem;
-        text-decoration: none;
-        color: var(--text);
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        transition: border-color 0.15s, box-shadow 0.15s;
-      }
-      .feature-card:hover {
-        border-color: var(--accent);
-        box-shadow: 0 2px 12px var(--shadow);
-      }
-      .card-icon {
-        line-height: 1;
-      }
-      .card-title {
-        font-weight: 700;
-        font-size: 0.97rem;
-      }
-      .card-desc {
-        font-size: 0.88rem;
-        color: var(--muted);
-        line-height: 1.6;
-        margin: 0;
-      }
-
-      /* 重要事項 */
-      .important-notice {
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 1.25rem 1.5rem;
-        margin-bottom: 0;
-        font-size: 0.93rem;
-      }
-      .important-notice h2 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 0 0 1.25rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border);
-      }
-      .important-notice h3 {
-        font-size: 0.97rem;
-        font-weight: 700;
-        margin: 1.25rem 0 0.4rem;
-      }
-      .important-notice h3:first-of-type {
-        margin-top: 0;
-      }
-      .important-notice p {
-        margin: 0 0 0.6rem;
-      }
-      .important-notice ul {
-        margin: 0 0 0.6rem;
-        padding-left: 1.4rem;
-      }
-      .important-notice li {
-        margin-bottom: 0.35rem;
-      }
-
-      /* セクション */
-      .section {
-        margin-bottom: 3rem;
-      }
-      .section h2 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem;
-        padding-bottom: 0.4rem;
-        border-bottom: 2px solid var(--border);
-        line-height: 1.4;
-      }
-      .section .section-desc {
-        margin: 0.75rem 0 1.25rem;
-        font-size: 0.97rem;
-      }
-      .section p {
-        margin: 0 0 1rem;
-      }
-
-      /* 機能メタ情報 */
-      .feature-meta {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 0.75rem 1rem;
-        margin: 0.75rem 0 1.25rem;
-        font-size: 0.9rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-      }
-      .feature-meta-row {
-        display: flex;
-        align-items: baseline;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-      }
-      .feature-meta-label {
-        display: inline-block;
-        font-size: 0.78rem;
-        font-weight: 600;
-        padding: 0.15em 0.55em;
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        color: var(--muted);
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .feature-meta-value {
-        color: var(--text);
-        font-size: 0.9rem;
-      }
-
-      /* スクリーンショット */
-      .screenshot {
-        display: block;
-        max-width: 100%;
-        height: auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px var(--shadow);
-        border: 1px solid var(--border);
-        margin: 1rem 0 1.5rem;
-      }
-      .screenshot-caption {
-        font-size: 0.85rem;
-        color: var(--muted);
-        margin: -0.75rem 0 1.5rem;
-        text-align: center;
-      }
-
-      /* 計算式ブロック */
-      .formula-block {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 1rem 1.25rem;
-        margin: 1rem 0 1.25rem;
-        font-size: 0.92rem;
-      }
-      .formula-block p {
-        margin: 0.25rem 0;
-      }
-      .formula-block code {
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
-          monospace;
-        font-size: 0.9em;
-        background: var(--border);
-        padding: 0.1em 0.35em;
-        border-radius: 3px;
-      }
-
-      code {
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
-          monospace;
-        font-size: 0.9em;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        padding: 0.1em 0.4em;
-        border-radius: 3px;
-      }
-
-      a {
-        color: var(--link);
-      }
-    </style>
+    <link rel="stylesheet" href="./style.css" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   </head>
   <body>
@@ -389,6 +88,16 @@
             <div class="card-title">仕訳のコピー</div>
             <p class="card-desc">仕訳一覧・仕訳帳・元帳など5画面に対応。1行コピーと仕訳のテキスト化（2行コピー・1行コピーの2形式）で相手勘定つき整形コピーを提供</p>
           </a>
+          <a href="#feature-trial-balance" class="feature-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h7v16H4zM13 4h7v16h-7z"/>
+                <path d="M15.5 8.5h3M15.5 12h3"/>
+              </svg>
+            </div>
+            <div class="card-title">科目リンクの一括オープン</div>
+            <p class="card-desc">試算表で Cmd/Ctrl+ドラッグして囲んだ科目リンクを、まとめて新しいタブで開く</p>
+          </a>
           <!-- 機能カードをここに追加 -->
         </div>
       </div>
@@ -397,7 +106,7 @@
       <section class="section">
         <h2>インストール後の設定</h2>
         <p class="section-desc">
-          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「摘要の検索ボタン」「金額の合計・コピー」「仕訳のコピー」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
+          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「摘要の検索ボタン」「金額の合計・コピー」「仕訳のコピー」「科目リンクの一括オープン」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
         </p>
         <img
           src="./mfca-labs-home-extension-popup-1280x800.png"
@@ -559,6 +268,27 @@
         <p class="screenshot-caption">補助元帳でも同様に仕訳のテキスト化が可能（相手勘定つき整形）。仕訳一覧・仕訳帳・総勘定元帳・補助元帳・振替伝票の全5画面に対応しています</p>
       </section>
 
+      <!-- 機能詳細⑥: 科目リンクの一括オープン -->
+      <section class="section" id="feature-trial-balance">
+        <h2>科目リンクの一括オープン</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">対象画面</span>
+            <span class="feature-meta-value">試算表（/balance_books/*：貸借対照表・損益計算書など）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">操作方法</span>
+            <span class="feature-meta-value">Cmd（Mac）/ Ctrl（Windows・Linux）を押しながら左ドラッグで科目リンクを囲む → ボタンを離すとまとめて新しいタブで開く</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          試算表の科目リンクを 1 つずつクリックして戻る、という往復をなくす機能です。Cmd/Ctrl を押しながらドラッグすると半透明の矩形が表示され、範囲に入った科目リンクがリアルタイムでハイライトされます。矩形の右下には選択件数（「N件」）が表示されるので、マウスを離す前にどのリンクが開かれるかを確認できます。
+        </p>
+        <p class="section-desc">
+          タブが開くのはドラッグ完了（ボタンを離した瞬間）のみで、ドラッグ途中に次々と開くことはありません。10 件を超える場合は件数を伝える確認ダイアログが表示されます。修飾キーなしの通常クリック・テキスト選択には一切影響しません。ポップアップの「科目リンクの一括オープン（ドラッグ選択）」チェックボックスでオン/オフを切り替えられます（デフォルト: ON）。
+        </p>
+      </section>
+
       <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
 
       <!-- 重要事項のご案内 -->
@@ -577,7 +307,11 @@
 
         <h3>3. セキュリティ・サポート面</h3>
         <ul>
-          <li><strong>セキュリティ:</strong> 処理はすべて利用者のPC内で完結し、入力データ等が外部サーバーへアップロードされることはありません。</li>
+          <li>
+            <strong>セキュリティ:</strong>
+            各機能の処理はすべて利用者のPC内で完結します。仕訳の日付・摘要・勘定科目・金額・取引先といった帳簿の内容や、事業者名・閲覧中のURLが外部へ送信されることは一切ありません。<br />
+            なお v1.8.0 以降は、本ツールを継続・改善するための判断材料として「機能ごとの1日あたりの利用回数」だけを匿名で送信する仕組みを設けています。これは初回に表示される確認画面で<strong>「協力する」を選んだ場合に限り</strong>動作し、選ばなければ<strong>何も送信されず、識別子も生成されません</strong>。後からいつでも停止でき、送信済みデータの削除も請求できます。詳しくは<a href="./data-collection.html">送信される利用データについて</a>と<a href="./privacy.html">プライバシーポリシー</a>をご覧ください。
+          </li>
           <li><strong>サポート:</strong> 操作方法のレクチャーや不具合対応のサポート窓口は設けておりません。もしお気づきの点があれば、MF社の担当者を通じてフィードバックをいただけますと幸いです。</li>
         </ul>
 
@@ -588,6 +322,27 @@
       </div>
 
     </main>
+
+    <!-- 共通フッター -->
+    <footer class="site-footer">
+      <div class="container">
+        <ul class="site-footer-nav">
+          <li><a href="./index.html" aria-current="page">トップ（機能紹介）</a></li>
+          <li><a href="./data-collection.html">送信される利用データについて</a></li>
+          <li><a href="./privacy.html">プライバシーポリシー</a></li>
+          <li>
+            <a
+              href="https://chromewebstore.google.com/detail/mfca-labs/edpgggmdgeneaokhlinphdaphigiifca"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Chrome ウェブストア</a>
+          </li>
+        </ul>
+        <p class="site-footer-note">
+          MFCA Labs は株式会社キャシュモが開発・提供する非公式ツールです。株式会社マネーフォワードの公式サービスではありません。
+        </p>
+      </div>
+    </footer>
 
   </body>
 </html>
