@@ -88,15 +88,16 @@
             <div class="card-title">仕訳のコピー</div>
             <p class="card-desc">仕訳一覧・仕訳帳・元帳など5画面に対応。1行コピーと仕訳のテキスト化（2行コピー・1行コピーの2形式）で相手勘定つき整形コピーを提供</p>
           </a>
-          <a href="#feature-trial-balance" class="feature-card">
+          <a href="#feature-trial-balance-link-opener" class="feature-card">
             <div class="card-icon">
               <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h7v16H4zM13 4h7v16h-7z"/>
-                <path d="M15.5 8.5h3M15.5 12h3"/>
+                <rect x="2" y="9" width="10" height="10" rx="1" stroke-dasharray="3 2"/>
+                <path d="M16 3h5v5M21 3l-6 6"/>
+                <path d="M15 11v6a2 2 0 0 1-2 2H6"/>
               </svg>
             </div>
             <div class="card-title">科目リンクの一括オープン</div>
-            <p class="card-desc">試算表で Cmd/Ctrl+ドラッグして囲んだ科目リンクを、まとめて新しいタブで開く</p>
+            <p class="card-desc">試算表でCmd（Mac）/Ctrl（Win/Linux）+左ドラッグするだけで、範囲内の科目リンクをまとめて新しいタブで開きます。通常の操作には一切影響しません</p>
           </a>
           <!-- 機能カードをここに追加 -->
         </div>
@@ -268,25 +269,32 @@
         <p class="screenshot-caption">補助元帳でも同様に仕訳のテキスト化が可能（相手勘定つき整形）。仕訳一覧・仕訳帳・総勘定元帳・補助元帳・振替伝票の全5画面に対応しています</p>
       </section>
 
-      <!-- 機能詳細⑥: 科目リンクの一括オープン -->
-      <section class="section" id="feature-trial-balance">
-        <h2>科目リンクの一括オープン</h2>
+      <!-- 機能詳細⑥: 科目リンクの一括オープン（ドラッグ選択） -->
+      <section class="section" id="feature-trial-balance-link-opener">
+        <h2>科目リンクの一括オープン（ドラッグ選択）</h2>
         <div class="feature-meta">
           <div class="feature-meta-row">
             <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">試算表（/balance_books/*：貸借対照表・損益計算書など）</span>
+            <span class="feature-meta-value">試算表（/balance_books/*）</span>
           </div>
           <div class="feature-meta-row">
             <span class="feature-meta-label">操作方法</span>
-            <span class="feature-meta-value">Cmd（Mac）/ Ctrl（Windows・Linux）を押しながら左ドラッグで科目リンクを囲む → ボタンを離すとまとめて新しいタブで開く</span>
+            <span class="feature-meta-value">Cmd（Mac）/ Ctrl（Win/Linux）を押しながら左ドラッグ → ボタンを離すと範囲内の科目リンクをまとめて新しいタブで開く</span>
           </div>
         </div>
         <p class="section-desc">
-          試算表の科目リンクを 1 つずつクリックして戻る、という往復をなくす機能です。Cmd/Ctrl を押しながらドラッグすると半透明の矩形が表示され、範囲に入った科目リンクがリアルタイムでハイライトされます。矩形の右下には選択件数（「N件」）が表示されるので、マウスを離す前にどのリンクが開かれるかを確認できます。
+          試算表の科目リンク（<code>&lt;a href&gt;</code>）を複数まとめて新しいタブで開ける機能です。Cmd（Mac）または Ctrl（Win/Linux）を押しながら左ドラッグすると、ドラッグ中は半透明の青系矩形オーバーレイが表示され、範囲内に入ったリンクがリアルタイムでハイライトされます。矩形の右下には選択件数バッジ（「N 件」）が表示されます。ドラッグを完了してボタンを離した瞬間に、選択されたすべてのリンクがまとめて新しいタブで開きます（ドラッグ中に順次開くのではなく、リリース時に一括オープン）。
         </p>
         <p class="section-desc">
-          タブが開くのはドラッグ完了（ボタンを離した瞬間）のみで、ドラッグ途中に次々と開くことはありません。10 件を超える場合は件数を伝える確認ダイアログが表示されます。修飾キーなしの通常クリック・テキスト選択には一切影響しません。ポップアップの「科目リンクの一括オープン（ドラッグ選択）」チェックボックスでオン/オフを切り替えられます（デフォルト: ON）。
+          10 件を超えるリンクが範囲に含まれる場合は、件数を伝える確認ダイアログを表示してから一括オープンします。修飾キー（Cmd/Ctrl）なしの通常クリック・テキスト選択・通常ドラッグには一切影響せず、MF クラウド会計本来の操作感を維持します。ポップアップの「科目リンクの一括オープン（ドラッグ選択）」チェックボックスで ON/OFF を切り替えられます（デフォルト: ON）。
         </p>
+        <img
+          src="./mfca-labs-trial-balance-link-opener-1280x800.png"
+          alt="科目リンクの一括オープン — 試算表でドラッグ範囲内の科目リンクがハイライトされ、右下に選択件数バッジが表示された画面"
+          class="screenshot"
+          loading="lazy"
+        />
+        <p class="screenshot-caption">Cmd/Ctrl+左ドラッグで範囲を指定すると科目リンクがハイライト。ドラッグ完了時にまとめて新しいタブで開きます</p>
       </section>
 
       <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
