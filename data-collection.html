@@ -56,7 +56,8 @@
     "dateQuickFill": 12,
     "interestCalculator": 3,
     "remarkSearch": 0,
-    "amountSelector": 5,
+    "amountSum": 5,
+    "amountDiff": 2,
     "journalCopyButton": 8,
     "trialBalanceLinkOpener": 1
   }
@@ -83,7 +84,7 @@
           </div>
           <div class="feature-meta-row">
             <span class="feature-meta-label">counts</span>
-            <span class="feature-meta-value">その日に各機能が動いた回数です。上から順に、日付ショートカット・受取利息の自動計算・摘要の検索ボタン・金額の合計コピー・仕訳のコピー・科目リンクの一括オープンに対応します</span>
+            <span class="feature-meta-value">その日に各機能が動いた回数です。上から順に、日付ショートカット・受取利息の自動計算・摘要の検索ボタン・金額の合計表示（合計）・金額の合計表示（差分）・仕訳のコピー・科目リンクの一括オープンに対応します。金額の合計表示だけは、合計を見たときと差分に切り替えたときを分けて数えるため 2 つに分かれています</span>
           </div>
         </div>
       </section>
@@ -92,7 +93,10 @@
       <section class="section" id="count-rules">
         <h2>どう使うとカウントが増えるのか</h2>
         <p class="section-desc">
-          貫いている原則はひとつです。<strong>UI が表示されただけでは数えません。実際に日付が入る・コピーされる・リンクが開かれる、その瞬間だけ数えます。</strong>失敗した操作（コピーの失敗・0 件・確認ダイアログでのキャンセル）も数えません。
+          貫いている原則はひとつです。<strong>UI が表示されただけでは数えません。実際に日付が入る・コピーされる・リンクが開かれる・表示が切り替わる、その瞬間だけ数えます。</strong>失敗した操作（コピーの失敗・0 件・確認ダイアログでのキャンセル）も数えません。
+        </p>
+        <p class="section-desc">
+          「何をもって使ったとみなすか」は機能によって違います。たとえば仕訳のコピーは<strong>コピーが成功したとき</strong>に数えますが、金額の合計表示は<strong>表示を開いた／切り替えた時点</strong>で数えます。機能ごとの条件は下記のとおりです。
         </p>
 
         <h3>日付ショートカット</h3>
@@ -131,15 +135,22 @@
           </div>
         </div>
 
-        <h3>金額の合計・コピー</h3>
+        <h3>金額の合計表示</h3>
+        <p>
+          この機能だけは<strong>「合計」と「差分」を分けて数えます</strong>。そして<strong>コピーしたかどうかは関係ありません。合計を見るために開いた時点で 1、差分に切り替えた時点でもう 1 です。</strong>コピーしてもしなくても変わりません。
+        </p>
         <div class="feature-meta">
           <div class="feature-meta-row">
-            <span class="feature-meta-label">+1 される</span>
-            <span class="feature-meta-value">選択した金額の合計または差分を、実際にコピーできたとき</span>
+            <span class="feature-meta-label">合計が +1</span>
+            <span class="feature-meta-value">「合計/差分」ボタンを押して合計表示を開いたとき。または差分表示から「合計」ボタンで合計表示に戻ったとき</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">差分が +1</span>
+            <span class="feature-meta-value">「差分」ボタンを押して差分表示に切り替わったとき</span>
           </div>
           <div class="feature-meta-row">
             <span class="feature-meta-label">増えない</span>
-            <span class="feature-meta-value">「合計/差分」でモードを ON にしただけ、金額セルを選択しただけ、コピーに失敗したとき</span>
+            <span class="feature-meta-value">すでに表示中のボタンをもう一度押しただけのとき（合計表示中に「合計」を連打しても増えません）、金額セルを選択しただけのとき</span>
           </div>
         </div>
 
@@ -169,15 +180,20 @@
 
         <h3>カウンタが持っている情報</h3>
         <p>
-          カウンタは <strong>1 日 1 機能につき整数 1 個だけ</strong>です。「どの仕訳で」「何時何分に」「どの事業者で」使ったかという情報は一切持っていません。
+          カウンタは <strong>1 日ひとつの項目につき整数 1 個だけ</strong>です。「どの仕訳で」「何時何分に」「どの事業者で」使ったかという情報は一切持っていません。
         </p>
         <p>
-          たとえば 7 月 27 日に日付ショートカットを 12 回、仕訳のコピーを 8 回使った場合、その日のカウンタはこうなります。
+          たとえば 7 月 27 日に、日付ショートカットを 12 回・受取利息の自動計算を 3 回使い、合計表示を 5 回開いて差分に 2 回切り替え、仕訳のコピーを 8 回・科目リンクの一括オープンを 1 回使った場合、その日のカウンタはこうなります。
         </p>
         <div class="formula-block">
           <pre><code>{
   "dateQuickFill": 12,
-  "journalCopyButton": 8
+  "interestCalculator": 3,
+  "remarkSearch": 0,
+  "amountSum": 5,
+  "amountDiff": 2,
+  "journalCopyButton": 8,
+  "trialBalanceLinkOpener": 1
 }</code></pre>
         </div>
         <p>
