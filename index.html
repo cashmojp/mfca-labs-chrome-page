@@ -541,6 +541,10 @@
             <span class="feature-meta-label">操作方法（仕訳のテキスト化）</span>
             <span class="feature-meta-value">「仕訳のテキスト化」トグルをONにして行をクリック選択（Shiftで範囲選択可）→ 右下バッジの「N件を2行コピー」または「N件を1行コピー」をクリック</span>
           </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">オプション（仕訳No）</span>
+            <span class="feature-meta-value">ポップアップの「仕訳Noをコピーに含める」をONにするとコピー出力に仕訳番号を挿入（例: 仕訳No4942）。仕訳帳・総勘定元帳・補助元帳・振替伝票に対応（デフォルト: OFF）</span>
+          </div>
         </div>
         <p class="section-desc">
           全5画面に対応した仕訳コピー機能です。デフォルトでは MF クラウド会計本来の操作感をそのまま維持し、明示的なトリガー（コピーアイコン・仕訳のテキスト化トグル）を操作したときのみ有効になります。
@@ -553,6 +557,9 @@
         </p>
         <p class="section-desc">
           <strong>コピーフォーマット（相手勘定つき整形）</strong>: 元帳系は <code>YYYY/MM/DD 相手勘定 摘要 金額 出金/入金</code>、仕訳帳・振替伝票は <code>YYYY/MM/DD 借方科目／貸方科目 摘要 金額</code>、仕訳一覧は <code>YYYY/MM/DD 金融機関 摘要 金額 出金/入金</code> の形式で出力されます（金額は円単位付き）。
+        </p>
+        <p class="section-desc">
+          <strong>仕訳Noをコピーに含める（オプション）</strong>: ポップアップの「仕訳Noをコピーに含める」チェックボックスをONにすると、コピー出力の日付の直後に仕訳番号が <code>仕訳No4942</code> の形式で挿入されます。仕訳帳・総勘定元帳・補助元帳・振替伝票の4画面に対応しています（仕訳一覧は対象外）。デフォルトはOFFです。
         </p>
         <img
           class="screenshot"
