@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>送信される利用データについて — MFCA Labs</title>
+    <meta
+      name="description"
+      content="Chrome 拡張機能「MFCA Labs」が送信する匿名の利用データについて、送られるもの・送られないもの・送信されるタイミング・停止と削除の方法を実際のデータそのままで説明します。"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+
+    <!-- ヒーロー（縮小版） -->
+    <header class="hero hero-compact">
+      <div class="container">
+        <a class="hero-logo" href="./index.html">
+          <img src="./icon.svg" width="32" height="32" alt="" />
+          <span>MFCA Labs</span>
+        </a>
+        <h1>送信される利用データについて</h1>
+        <p class="hero-sub">送るのは「機能ごとの1日の利用回数」だけです</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <p class="doc-meta">v1.8.0 以降の動作について説明しています（最終更新: 2026年7月28日）</p>
+
+      <div class="important-notice">
+        <h2>先に結論</h2>
+        <ul>
+          <li><strong>仕訳の内容は送りません。</strong>摘要・勘定科目・金額・日付・取引先は 1 文字も出ていきません。</li>
+          <li>送るのは「どの機能を、その日に何回使ったか」という<strong>回数だけ</strong>です。</li>
+          <li>送信は、拡張機能の確認画面で<strong>「協力する」を選んだ場合に限り</strong>行われます。選ばなければ何も送られません。</li>
+          <li>あとからいつでも止められますし、送信済みのデータも消せます。</li>
+        </ul>
+      </div>
+
+      <!-- 送られるデータ -->
+      <section class="section" id="what-is-sent">
+        <h2>送られるデータ（実物）</h2>
+        <p class="section-desc">
+          1 台のパソコンにつき 1 日 1 回、下記の内容がそのまま送られます。これが全部です。ここに書かれていないものは送られません。
+        </p>
+
+        <div class="formula-block">
+          <p><strong>送信されるデータの実物</strong></p>
+          <pre><code>{
+  "schema": 1,
+  "installId": "3f2a1c8e-....-9b4d",
+  "extVersion": "1.8.0",
+  "date": "2026-07-27",
+  "counts": {
+    "dateQuickFill": 12,
+    "interestCalculator": 3,
+    "remarkSearch": 0,
+    "amountSum": 5,
+    "amountDiff": 2,
+    "journalCopyButton": 8,
+    "trialBalanceLinkOpener": 1
+  }
+}</code></pre>
+        </div>
+
+        <p class="section-desc">それぞれの意味は次のとおりです。</p>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">schema</span>
+            <span class="feature-meta-value">データ形式のバージョン番号です</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">installId</span>
+            <span class="feature-meta-value">「協力する」を選んだときに生成される完全なランダム値（UUID v4）です。Google アカウントにも端末情報にも紐づきません。誰のものかを当社が知る手段はありません</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">extVersion</span>
+            <span class="feature-meta-value">お使いの MFCA Labs のバージョンです</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">date</span>
+            <span class="feature-meta-value">利用日です。<strong>日付のみ</strong>で、何時何分に操作したかという情報は持っていません</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">counts</span>
+            <span class="feature-meta-value">その日に各機能が動いた回数です。上から順に、日付ショートカット・受取利息の自動計算・摘要の検索ボタン・金額の合計表示（合計）・金額の合計表示（差分）・仕訳のコピー・科目リンクの一括オープンに対応します。金額の合計表示だけは、合計を見たときと差分に切り替えたときを分けて数えるため 2 つに分かれています</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- カウント条件 -->
+      <section class="section" id="count-rules">
+        <h2>どう使うとカウントが増えるのか</h2>
+        <p class="section-desc">
+          貫いている原則はひとつです。<strong>UI が表示されただけでは数えません。実際に日付が入る・コピーされる・リンクが開かれる・表示が切り替わる、その瞬間だけ数えます。</strong>失敗した操作（コピーの失敗・0 件・確認ダイアログでのキャンセル）も数えません。
+        </p>
+        <p class="section-desc">
+          「何をもって使ったとみなすか」は機能によって違います。たとえば仕訳のコピーは<strong>コピーが成功したとき</strong>に数えますが、金額の合計表示は<strong>表示を開いた／切り替えた時点</strong>で数えます。機能ごとの条件は下記のとおりです。
+        </p>
+
+        <h3>日付ショートカット</h3>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">+1 される</span>
+            <span class="feature-meta-value">ショートカットのボタンを押して、日付が実際に入力されたとき</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">増えない</span>
+            <span class="feature-meta-value">日付欄にフォーカスして、ショートカットのボタンが表示されただけのとき</span>
+          </div>
+        </div>
+
+        <h3>受取利息の自動計算</h3>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">+1 される</span>
+            <span class="feature-meta-value">「利息計算」ボタンを押して、計算結果が入力されたとき</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">増えない</span>
+            <span class="feature-meta-value">貸方に「受取利息」を選んで、ボタンが表示されただけのとき</span>
+          </div>
+        </div>
+
+        <h3>摘要の検索ボタン</h3>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">+1 される</span>
+            <span class="feature-meta-value">「仕訳帳で検索」または「Google 検索」を押して、検索が実行されたとき（2 つは区別せず合算します）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">増えない</span>
+            <span class="feature-meta-value">摘要セルにボタンが表示されただけのとき</span>
+          </div>
+        </div>
+
+        <h3>金額の合計表示</h3>
+        <p>
+          この機能だけは<strong>「合計」と「差分」を分けて数えます</strong>。そして<strong>コピーしたかどうかは関係ありません。合計を見るために開いた時点で 1、差分に切り替えた時点でもう 1 です。</strong>コピーしてもしなくても変わりません。
+        </p>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">合計が +1</span>
+            <span class="feature-meta-value">「合計/差分」ボタンを押して合計表示を開いたとき。または差分表示から「合計」ボタンで合計表示に戻ったとき</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">差分が +1</span>
+            <span class="feature-meta-value">「差分」ボタンを押して差分表示に切り替わったとき</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">増えない</span>
+            <span class="feature-meta-value">すでに表示中のボタンをもう一度押しただけのとき（合計表示中に「合計」を連打しても増えません）、金額セルを選択しただけのとき</span>
+          </div>
+        </div>
+
+        <h3>仕訳のコピー</h3>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">+1 される</span>
+            <span class="feature-meta-value">仕訳を実際にクリップボードへコピーできたとき。1 行コピーでも複数行の一括コピーでも「1 操作 = 1」です（何行コピーしたかは数えません）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">増えない</span>
+            <span class="feature-meta-value">「仕訳のテキスト化」トグルを ON にしただけ、行を選択しただけ、コピーに失敗したとき</span>
+          </div>
+        </div>
+
+        <h3>科目リンクの一括オープン</h3>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">+1 される</span>
+            <span class="feature-meta-value">Cmd/Ctrl+ドラッグを離して、リンクが実際に開かれたとき。開いたタブの数ではなく、ドラッグ 1 回で 1 です</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">増えない</span>
+            <span class="feature-meta-value">ドラッグしている最中、範囲に 1 件も入らずに終わったとき、11 件以上の確認ダイアログでキャンセルしたとき</span>
+          </div>
+        </div>
+
+        <h3>カウンタが持っている情報</h3>
+        <p>
+          カウンタは <strong>1 日ひとつの項目につき整数 1 個だけ</strong>です。「どの仕訳で」「何時何分に」「どの事業者で」使ったかという情報は一切持っていません。
+        </p>
+        <p>
+          たとえば 7 月 27 日に、日付ショートカットを 12 回・受取利息の自動計算を 3 回使い、合計表示を 5 回開いて差分に 2 回切り替え、仕訳のコピーを 8 回・科目リンクの一括オープンを 1 回使った場合、その日のカウンタはこうなります。
+        </p>
+        <div class="formula-block">
+          <pre><code>{
+  "dateQuickFill": 12,
+  "interestCalculator": 3,
+  "remarkSearch": 0,
+  "amountSum": 5,
+  "amountDiff": 2,
+  "journalCopyButton": 8,
+  "trialBalanceLinkOpener": 1
+}</code></pre>
+        </div>
+        <p>
+          これだけです。<strong>日付が変わるとカウンタは 0 から数え直します。</strong>
+        </p>
+      </section>
+
+      <!-- 送られないもの -->
+      <section class="section" id="what-is-not-sent">
+        <h2>送られないもの</h2>
+        <p class="section-desc">
+          次のものは<strong>一切送信されません</strong>。そもそも拡張機能が集めていません。
+        </p>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">帳簿の内容</span>
+            <span class="feature-meta-value">仕訳の摘要・勘定科目・金額・日付・取引先</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">事業者の情報</span>
+            <span class="feature-meta-value">事業者名・事業者 ID・閲覧中の URL・クエリパラメータ</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">個人の情報</span>
+            <span class="feature-meta-value">Google アカウント・メールアドレス・氏名</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">IP アドレス</span>
+            <span class="feature-meta-value">保存しません。通信の性質上サーバーには一時的に届きますが、悪用を防ぐ回数制限にのみ使い、生の値もハッシュ値もデータベースに残しません</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">操作の時刻</span>
+            <span class="feature-meta-value">日付のみです。「何時何分に操作したか」という秒精度のタイムスタンプは持ちません</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">端末の情報</span>
+            <span class="feature-meta-value">User-Agent・OS・画面サイズ。送るのは拡張機能のバージョンだけです</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          アクセス解析サービスや広告ネットワークの類も一切組み込んでいません。Cookie も使いません。
+        </p>
+      </section>
+
+      <!-- いつ送られるか -->
+      <section class="section" id="when-is-it-sent">
+        <h2>いつ送られるか</h2>
+        <p class="section-desc">
+          「操作するたびにその都度送信する」という作りにはしていません。実際の流れは次のとおりです。
+        </p>
+        <ol>
+          <li>
+            機能を使った瞬間は、<strong>お使いのパソコンの中でカウンタを 1 増やすだけ</strong>です。この時点では何も送信しません。
+          </li>
+          <li>
+            送信対象になるのは<strong>日付が変わって確定した過去の分だけ</strong>です。<strong>当日分がその日のうちに出ていくことはありません。</strong>
+          </li>
+          <li>
+            実際に送られるのは、次にマネーフォワード クラウド会計を開いたときで、かつ<strong>前回の送信から 24 時間以上経っている</strong>ときです。
+          </li>
+          <li>
+            送信は拡張機能のバックグラウンドが行います。<strong>マネーフォワード クラウド会計の画面を一切ブロックしません。</strong>送信中だからといって操作が待たされることはありません。
+          </li>
+          <li>
+            オフラインなどで送信に失敗した場合はパソコンの中に残して次回リトライします。<strong>7 日以上古くなったものは送らずに破棄</strong>します。
+          </li>
+        </ol>
+        <p class="section-desc">
+          結果として、当社の手元に届くのは「ある匿名の識別子が、ある日に、どの機能を何回使ったか」という 1 日 1 行の記録だけになります。
+        </p>
+      </section>
+
+      <!-- なぜ集めるか -->
+      <section class="section" id="why">
+        <h2>なぜ集めるのか</h2>
+        <p>
+          MFCA Labs は無償で提供している非公式ツールで、開発と維持には社内の工数を使っています。「このツールを続ける価値があるか」「どの機能に手を入れるべきか」を社内で説明するには、実際に使われているという事実が必要です。
+        </p>
+        <p>
+          そのために知りたいのは 2 点だけです。<strong>どの機能がどれくらい使われているか</strong>と、<strong>一度使った方が使い続けてくださっているか</strong>。上記のデータは、この 2 点を出すための最小限に絞っています。
+        </p>
+        <p>
+          <strong>第三者への提供・販売は行いません。</strong>広告目的にも使いません。用途は本ツールを継続・改善するための社内説明に限られます。
+        </p>
+      </section>
+
+      <!-- 止め方・消し方 -->
+      <section class="section" id="how-to-stop">
+        <h2>止めたいとき・消したいとき</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">断る</span>
+            <span class="feature-meta-value">初回の確認画面で「今はしない」または「今後表示しない」を選ぶだけです。<strong>断った場合は installId すら生成されません</strong>。何も送られませんし、そもそも記録が作られません</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">あとから止める</span>
+            <span class="feature-meta-value">ツールバーの MFCA Labs アイコンからポップアップを開き、「利用データの提供」をオフにします。オフにした時点で installId とパソコン内の未送信データが削除されます</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">送信済みを消す</span>
+            <span class="feature-meta-value">同じポップアップの「これまでに送信したデータを削除する」を押すと、サーバー上の該当データがすべて削除されます</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          断ったこと・止めたことによって、機能が制限されたり動作が遅くなったりすることはありません。すべての機能をこれまでどおりお使いいただけます。
+        </p>
+      </section>
+
+      <div class="important-notice">
+        <h2>もっと詳しい取り扱い</h2>
+        <p>
+          収集主体・保存期間・削除請求の手続きなど、正式な取り扱いは<a href="./privacy.html">プライバシーポリシー</a>に記載しています。
+        </p>
+      </div>
+
+    </main>
+
+    <!-- 共通フッター -->
+    <footer class="site-footer">
+      <div class="container">
+        <ul class="site-footer-nav">
+          <li><a href="./index.html">トップ（機能紹介）</a></li>
+          <li><a href="./data-collection.html" aria-current="page">送信される利用データについて</a></li>
+          <li><a href="./privacy.html">プライバシーポリシー</a></li>
+          <li>
+            <a
+              href="https://chromewebstore.google.com/detail/mfca-labs/edpgggmdgeneaokhlinphdaphigiifca"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Chrome ウェブストア</a>
+          </li>
+        </ul>
+        <p class="site-footer-note">
+          MFCA Labs は株式会社キャシュモが開発・提供する非公式ツールです。株式会社マネーフォワードの公式サービスではありません。
+        </p>
+      </div>
+    </footer>
+
+  </body>
+</html>

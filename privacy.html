@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>プライバシーポリシー — MFCA Labs</title>
+    <meta
+      name="description"
+      content="株式会社キャシュモが提供する Chrome 拡張機能「MFCA Labs」のプライバシーポリシー。取得する情報・利用目的・第三者提供・保存期間・削除請求の方法を定めます。"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+
+    <!-- ヒーロー（縮小版） -->
+    <header class="hero hero-compact">
+      <div class="container">
+        <a class="hero-logo" href="./index.html">
+          <img src="./icon.svg" width="32" height="32" alt="" />
+          <span>MFCA Labs</span>
+        </a>
+        <h1>プライバシーポリシー</h1>
+        <p class="hero-sub">Chrome 拡張機能「MFCA Labs」における個人情報等の取り扱い</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <p class="doc-meta">制定日: 2026年7月28日 ／ 最終改定日: 2026年7月28日</p>
+
+      <div class="important-notice">
+        <h2>はじめに</h2>
+        <p>
+          株式会社キャシュモ（以下「当社」といいます）は、当社が提供する Chrome 拡張機能「MFCA Labs」（以下「本拡張機能」といいます）における情報の取り扱いについて、本プライバシーポリシー（以下「本ポリシー」といいます）を定めます。
+        </p>
+        <p>
+          本拡張機能は、マネーフォワード クラウド会計の画面上で入力を補助するツールです。<strong>利用者が入力・閲覧する帳簿データを当社が取得することはありません。</strong>本拡張機能が取得するのは、利用者が明示的に同意した場合に限り、第 2 条に定める匿名の利用状況データのみです。
+        </p>
+        <p>
+          利用者向けのかみ砕いた説明は<a href="./data-collection.html">送信される利用データについて</a>をご覧ください。本ポリシーはその正式版にあたります。
+        </p>
+      </div>
+
+      <!-- 1 -->
+      <section class="section" id="scope">
+        <h2>第 1 条（適用範囲）</h2>
+        <p>
+          本ポリシーは、本拡張機能および本ウェブサイト（<code>https://cashmojp.github.io/mfca-labs-chrome-page/</code>）における情報の取り扱いに適用されます。
+        </p>
+        <p>
+          本拡張機能はマネーフォワード クラウド会計の画面上で動作しますが、マネーフォワード クラウド会計そのものは株式会社マネーフォワードが提供するサービスであり、同サービスにおける情報の取り扱いは同社のプライバシーポリシーによります。本ポリシーの適用範囲外です。
+        </p>
+      </section>
+
+      <!-- 2 -->
+      <section class="section" id="collected">
+        <h2>第 2 条（取得する情報）</h2>
+        <p>
+          当社は、利用者が本拡張機能上で明示的に同意した場合に限り、次の情報を取得します。取得する情報はこれがすべてです。
+        </p>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">利用回数</span>
+            <span class="feature-meta-value">本拡張機能の各機能（日付ショートカット、受取利息の自動計算、摘要の検索ボタン、金額の合計表示、仕訳のコピー、科目リンクの一括オープン）が 1 日あたりに動作した回数。金額の合計表示については合計と差分を別項目として計上するため、計上する項目は計 7 項目となります</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">利用日</span>
+            <span class="feature-meta-value">上記回数が計上された日付（年月日のみ。時分秒は取得しません）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">インストール識別子</span>
+            <span class="feature-meta-value">同意時に利用者の端末上で生成されるランダムな値（UUID v4）。当社が付与するものではなく、既存のいかなる識別子からも導出されません</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">拡張機能バージョン</span>
+            <span class="feature-meta-value">利用者が使用している本拡張機能のバージョン番号</span>
+          </div>
+        </div>
+        <p>実際に送信されるデータの実物は次のとおりです。</p>
+        <div class="formula-block">
+          <pre><code>{
+  "schema": 1,
+  "installId": "3f2a1c8e-....-9b4d",
+  "extVersion": "1.8.0",
+  "date": "2026-07-27",
+  "counts": {
+    "dateQuickFill": 12,
+    "interestCalculator": 3,
+    "remarkSearch": 0,
+    "amountSum": 5,
+    "amountDiff": 2,
+    "journalCopyButton": 8,
+    "trialBalanceLinkOpener": 1
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="section" id="not-collected">
+        <h2>第 3 条（取得しない情報）</h2>
+        <p>当社は、本拡張機能を通じて次の情報を取得しません。</p>
+        <ul>
+          <li>仕訳その他の帳簿データの内容（日付・摘要・勘定科目・補助科目・金額・取引先など）</li>
+          <li>事業者名、事業者 ID、閲覧中の URL およびクエリパラメータ</li>
+          <li>氏名、メールアドレス、電話番号、Google アカウントに関する情報</li>
+          <li>操作の時分秒（第 2 条のとおり日付のみを取得します）</li>
+          <li>User-Agent、OS、ブラウザの詳細バージョン、画面サイズその他の端末情報</li>
+          <li>Cookie、ローカルストレージ等を用いた閲覧行動の追跡情報</li>
+        </ul>
+        <p>
+          IP アドレスについては、通信の性質上、当社の収集サーバーが送信時に受信します。ただし当社はこれを不正な大量送信を防ぐための一時的な回数制限にのみ使用し、<strong>生の値およびハッシュ値のいずれもデータベースに保存しません</strong>。当該カウンタは 1 時間で消滅します。
+        </p>
+        <p>
+          本拡張機能および本ウェブサイトには、アクセス解析ツール、広告ネットワーク、ソーシャルプラグイン等の第三者提供のトラッキング機構を一切組み込んでいません。
+        </p>
+      </section>
+
+      <!-- 4 -->
+      <section class="section" id="purpose">
+        <h2>第 4 条（利用目的）</h2>
+        <p>当社は、取得した情報を次の目的にのみ利用します。</p>
+        <ul>
+          <li>本拡張機能の機能別の利用状況を把握すること</li>
+          <li>本拡張機能の継続的な利用率（リテンション）を把握すること</li>
+          <li>上記に基づき、本拡張機能の提供継続および改善内容を当社内部で判断・説明すること</li>
+        </ul>
+        <p>
+          当社は、取得した情報を広告配信、マーケティング、利用者個人のプロファイリングその他上記以外の目的に利用しません。
+        </p>
+      </section>
+
+      <!-- 5 -->
+      <section class="section" id="consent">
+        <h2>第 5 条（同意を前提とする取得）</h2>
+        <p>
+          第 2 条の情報の取得は、利用者が本拡張機能上に表示される確認画面で明示的に同意した場合に限り開始します。
+        </p>
+        <ul>
+          <li>同意しない場合、インストール識別子は生成されず、送信も一切行われません。</li>
+          <li>同意はいつでも撤回できます。撤回した時点で、端末上のインストール識別子および未送信のデータは削除されます。</li>
+          <li>同意の有無によって、本拡張機能の機能・性能に差異は生じません。</li>
+          <li>本ポリシーまたは同意文言に重要な変更があった場合、当社は改めて同意を求めます。</li>
+        </ul>
+      </section>
+
+      <!-- 6 -->
+      <section class="section" id="third-party">
+        <h2>第 6 条（第三者提供）</h2>
+        <p>
+          当社は、取得した情報を第三者に提供または販売しません。ただし、法令に基づき開示が求められる場合はこの限りではありません。
+        </p>
+        <p>
+          なお、データの保管にあたりクラウドサービス事業者を利用します。これは個人情報の保護に関する法律上の第三者提供ではなく、当社の管理下での取り扱いの委託にあたります。委託先には必要かつ適切な監督を行います。詳細は第 7 条に記載します。
+        </p>
+      </section>
+
+      <!-- 7 -->
+      <section class="section" id="storage">
+        <h2>第 7 条（保存場所および保存期間）</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">保存場所</span>
+            <span class="feature-meta-value">Supabase Inc. が提供するマネージドデータベース（東京リージョン: ap-northeast-1）に保存します</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">保存期間</span>
+            <span class="feature-meta-value">受領した日から <strong>400 日</strong>経過したデータは、自動処理により削除します</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">アクセス制限</span>
+            <span class="feature-meta-value">データベースは行レベルセキュリティを有効化し、当社の管理する権限からのみ読み書きできる構成としています</span>
+          </div>
+        </div>
+        <p>
+          400 日という期間は、前年同月との比較を 1 回行うために必要な最小限の期間として設定しています。
+        </p>
+      </section>
+
+      <!-- 8 -->
+      <section class="section" id="deletion">
+        <h2>第 8 条（削除の請求）</h2>
+        <p>
+          利用者は、自らの端末から送信されたデータの削除をいつでも請求できます。方法は次のとおりです。
+        </p>
+        <ul>
+          <li>
+            <strong>本拡張機能のポップアップから請求する（推奨）:</strong>
+            ツールバーの MFCA Labs アイコンをクリックし、「これまでに送信したデータを削除する」を選択してください。端末上のインストール識別子に紐づくデータがサーバーから削除されます。
+          </li>
+          <li>
+            <strong>お問い合わせ窓口に連絡する:</strong>
+            第 11 条の連絡先までご連絡ください。ただし当社は取得した情報と利用者個人を結び付ける手段を保有していないため、削除対象を特定するにはインストール識別子の提示が必要です。
+          </li>
+        </ul>
+        <p>
+          本拡張機能をアンインストールした場合、端末上に保存されたインストール識別子および未送信のデータは削除されます。ただし送信済みのデータはサーバー上に残るため、削除を希望される場合はアンインストール前に上記の削除操作を行ってください。
+        </p>
+      </section>
+
+      <!-- 9 -->
+      <section class="section" id="personal-info">
+        <h2>第 9 条（個人情報該当性）</h2>
+        <p>
+          第 2 条により取得する情報は、いずれも特定の個人を識別できるものではなく、当社が保有する他の情報と照合しても特定の個人を識別することはできません。したがって当社は、これらの情報は個人情報の保護に関する法律上の「個人情報」に該当しないと考えています。
+        </p>
+        <p>
+          もっとも、当社は利用者の懸念に配慮し、これらの情報についても同法の趣旨に準じ、本ポリシーの定めに従って適切に取り扱います。
+        </p>
+      </section>
+
+      <!-- 10 -->
+      <section class="section" id="revision">
+        <h2>第 10 条（本ポリシーの改定）</h2>
+        <p>
+          当社は、法令の変更または本拡張機能の仕様変更に応じて本ポリシーを改定することがあります。改定した場合は、本ページに改定後の内容および最終改定日を掲載します。
+        </p>
+        <p>
+          取得する情報の項目または利用目的を実質的に変更する場合には、本ページへの掲載に加え、本拡張機能上で改めて利用者の同意を求めます。
+        </p>
+      </section>
+
+      <!-- 11 -->
+      <section class="section" id="contact">
+        <h2>第 11 条（事業者およびお問い合わせ窓口）</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">事業者</span>
+            <span class="feature-meta-value">株式会社キャシュモ</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">お問い合わせ</span>
+            <span class="feature-meta-value">{{CONTACT_EMAIL}}</span>
+          </div>
+        </div>
+        <p>
+          本ポリシーに関するお問い合わせ、および第 8 条の削除請求は上記の窓口までご連絡ください。なお本拡張機能は無償の非公式ツールであり、操作方法のレクチャーや不具合対応のサポート窓口は設けておりません。あらかじめご了承ください。
+        </p>
+      </section>
+
+    </main>
+
+    <!-- 共通フッター -->
+    <footer class="site-footer">
+      <div class="container">
+        <ul class="site-footer-nav">
+          <li><a href="./index.html">トップ（機能紹介）</a></li>
+          <li><a href="./data-collection.html">送信される利用データについて</a></li>
+          <li><a href="./privacy.html" aria-current="page">プライバシーポリシー</a></li>
+          <li>
+            <a
+              href="https://chromewebstore.google.com/detail/mfca-labs/edpgggmdgeneaokhlinphdaphigiifca"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Chrome ウェブストア</a>
+          </li>
+        </ul>
+        <p class="site-footer-note">
+          MFCA Labs は株式会社キャシュモが開発・提供する非公式ツールです。株式会社マネーフォワードの公式サービスではありません。
+        </p>
+      </div>
+    </footer>
+
+  </body>
+</html>
