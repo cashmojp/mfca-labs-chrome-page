@@ -6,7 +6,7 @@
     <title>MFCA Labs — マネーフォワード クラウド会計向け Chrome 拡張機能</title>
     <meta
       name="description"
-      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピー・仕訳のコピーを提供します。"
+      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピー・仕訳のコピー・ルール適用のみチェックを提供します。"
     />
     <style>
       :root {
@@ -400,6 +400,16 @@
             <div class="card-title">科目リンクの一括オープン</div>
             <p class="card-desc">試算表でCmd（Mac）/Ctrl（Win/Linux）+左ドラッグするだけで、範囲内の科目リンクをまとめて新しいタブで開きます。通常の操作には一切影響しません</p>
           </a>
+          <a href="#feature-rule-auto-checker" class="feature-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M8 12l3 3 5-6"/>
+              </svg>
+            </div>
+            <div class="card-title">ルール適用のみチェック</div>
+            <p class="card-desc">連携サービスから入力で、自動仕訳ルールが適用された行だけをワンクリックで一括選択。「続きを表示」も自動で展開します</p>
+          </a>
           <!-- 機能カードをここに追加 -->
         </div>
       </div>
@@ -408,7 +418,7 @@
       <section class="section">
         <h2>インストール後の設定</h2>
         <p class="section-desc">
-          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「摘要の検索ボタン」「金額の合計・コピー」「仕訳のコピー」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
+          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「摘要の検索ボタン」「金額の合計・コピー」「仕訳のコピー」「科目リンクの一括オープン」「ルール適用のみチェック」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
         </p>
         <img
           src="./mfca-labs-home-extension-popup-1280x800.png"
@@ -556,6 +566,9 @@
           <strong>仕訳のテキスト化（複数行一括）</strong>: 上部の「仕訳のテキスト化」トグルをONにするとモードが起動します。行をクリックして選択（Shift+クリックで範囲選択も可能）し、右下バッジの2つのボタンで形式を選択してコピーします。複合仕訳グループもグループ単位で正しく処理されます。Esc を押すと選択クリア、選択なし状態でもう一度 Esc を押すとモードを終了します。<br>「<strong>N件を2行コピー</strong>」は相手勘定でグルーピングし各明細を列挙する形式（例: ▼現金 → 明細1・明細2）。「<strong>N件を1行コピー</strong>」はグルーピングなし・単体コピーと同じ1行フォーマットを改行で並べる形式です。
         </p>
         <p class="section-desc">
+          <strong>まとめ方（入金・出金ごと）</strong>: 連携サービスから入力・総勘定元帳・補助元帳では、複数行を選択すると右下バッジの上に「まとめ方」の選択肢が表示されます。「入金・出金ごと」を選ぶと、同じ科目・同じ補助科目（連携サービスでは同じ口座）の括りを保ったまま、その中を入金と出金に分け、見出し付きの明細をコピーします（連携サービスでは金額のプラスを入金、マイナスを出金として分けます）。既定は「通常」で、1行コピーには適用されません。選んだまとめ方は同じタブ内で保持され、ページを再読み込みすると「通常」に戻ります。
+        </p>
+        <p class="section-desc">
           <strong>コピーフォーマット（相手勘定つき整形）</strong>: 元帳系は <code>YYYY/MM/DD 相手勘定 摘要 金額 出金/入金</code>、仕訳帳・振替伝票は <code>YYYY/MM/DD 借方科目／貸方科目 摘要 金額</code>、仕訳一覧は <code>YYYY/MM/DD 金融機関 摘要 金額 出金/入金</code> の形式で出力されます（金額は円単位付き）。
         </p>
         <p class="section-desc">
@@ -603,6 +616,27 @@
           loading="lazy"
         />
         <p class="screenshot-caption">Cmd/Ctrl+左ドラッグで範囲を指定すると科目リンクがハイライト。ドラッグ完了時にまとめて新しいタブで開きます</p>
+      </section>
+
+      <!-- 機能詳細⑦: ルール適用のみチェック -->
+      <section class="section" id="feature-rule-auto-checker">
+        <h2>ルール適用のみチェック</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">対象画面</span>
+            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">操作方法</span>
+            <span class="feature-meta-value">「ルール適用のみチェック」ボタンをクリック → 自動仕訳ルールで勘定科目が割り当てられた行がまとめて選択される</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          「続きを表示」を自動で展開してから、自動仕訳ルールで勘定科目が割り当てられた行をまとめて選択します。AI推論アイコンのある行・未設定の行・選択できない行は対象外で、既に選択済みの行はそのまま維持されます。
+        </p>
+        <p class="section-desc">
+          展開は最大5回、待機は全体で最大15秒です。上限に達した場合は表示済みの対象行を選択し、続きを手動で表示して再実行するよう案内します。選択はボタンを押したときだけ実行され、仕訳の登録・保存は行いません。ポップアップの「ルール適用のみチェック」チェックボックスでボタンの表示を ON/OFF できます（デフォルト: ON）。
+        </p>
       </section>
 
       <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
