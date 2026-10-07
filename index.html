@@ -357,7 +357,17 @@
               </svg>
             </div>
             <div class="card-title">受取利息の自動計算</div>
-            <p class="card-desc">手取り額から受取利息と源泉税を逆算して仕訳フィールドへ自動入力</p>
+            <p class="card-desc">手取り額から受取利息と源泉税を逆算して金額欄へ自動入力（摘要は変更しません）。仕訳帳の編集行でも使えます</p>
+          </a>
+          <a href="#feature-withholding" class="feature-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <path d="M8 7h8M9 17l6-6M9.5 11.5h.01M14.5 16.5h.01"/>
+              </svg>
+            </div>
+            <div class="card-title">源泉税の計算（報酬・配当）</div>
+            <p class="card-desc">支払報酬・支払手数料や受取配当金の振込額から、総額と源泉税を割り戻して金額欄へ反映。種類（一般の報酬／司法書士等／上場株式／非上場・大口）を選べます</p>
           </a>
           <a href="#feature-search" class="feature-card">
             <div class="card-icon">
@@ -418,7 +428,7 @@
       <section class="section">
         <h2>インストール後の設定</h2>
         <p class="section-desc">
-          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「摘要の検索ボタン」「金額の合計・コピー」「仕訳のコピー」「科目リンクの一括オープン」「ルール適用のみチェック」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
+          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「源泉税の計算（報酬・配当）」「摘要の検索ボタン」「金額の合計・コピー」「仕訳のコピー」「科目リンクの一括オープン」「ルール適用のみチェック」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
         </p>
         <img
           src="./mfca-labs-home-extension-popup-1280x800.png"
@@ -458,7 +468,7 @@
         <div class="feature-meta">
           <div class="feature-meta-row">
             <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">仕訳登録画面（連携サービスから展開した仕訳行を含む）</span>
+            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）の展開行、仕訳帳（/books）の編集行</span>
           </div>
           <div class="feature-meta-row">
             <span class="feature-meta-label">起動タイミング</span>
@@ -466,7 +476,7 @@
           </div>
         </div>
         <p class="section-desc">
-          「利息計算」ボタンが表示されます。借方の入金額（手取り額）を入力してボタンをクリックすると、受取利息の総額と源泉所得税額を自動計算して各フィールドへ反映します。
+          「利息を計算」ボタンが表示されます。借方の入金額（手取り額）を入力してボタンをクリックすると、受取利息の総額と源泉所得税額を自動計算して金額欄へ反映します。摘要は変更しません。先に単一仕訳で登録した仕訳も、仕訳帳の詳細ボタンから編集して複合仕訳にすれば、その編集行で計算できます。
         </p>
 
         <div class="formula-block">
@@ -481,8 +491,49 @@
           alt="受取利息の自動計算 — 利息計算ボタンの表示画面"
           class="screenshot"
         />
-        <p class="screenshot-caption">「利息計算」ボタンが表示されます</p>
+        <p class="screenshot-caption">利息の計算ボタンが表示されます</p>
 
+      </section>
+
+      <!-- 機能詳細②-2: 源泉税の計算（報酬・配当） -->
+      <section class="section" id="feature-withholding">
+        <h2>源泉税の計算（報酬・配当）</h2>
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">対象画面</span>
+            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）の展開行、仕訳帳（/books）の編集行</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">起動タイミング</span>
+            <span class="feature-meta-value">借方が「支払報酬」「支払手数料」、または貸方が「受取配当金」の行</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          勘定科目セルの下に、種類を選ぶドロップダウンと「源泉税を計算」ボタンが表示されます。振込額（手取り額）を入力してボタンをクリックすると、総額と源泉税を割り戻して金額欄へ反映します。選んだ種類は勘定科目ごとに記憶されます。ドロップダウン横の「?」にカーソルを合わせると、税率・計算式と今回の計算結果を確認できます。摘要や勘定科目は変更しません。
+        </p>
+
+        <div class="formula-block">
+          <p><strong>種類と源泉税（総額 G、1円未満切り捨て）</strong></p>
+          <p>一般の報酬: <code>G ≦ 100万円 → G × 10.21%</code>、<code>G &gt; 100万円 → 102,100円 + (G − 100万円) × 20.42%</code></p>
+          <p>司法書士等: <code>G ≦ 1万円 → 0円</code>、<code>G &gt; 1万円 → (G − 1万円) × 10.21%</code></p>
+          <p>上場株式の配当: <code>G × 15.315%</code></p>
+          <p>非上場・大口の配当: <code>G × 20.42%</code></p>
+          <p>振込額から総額を割り戻す式: <code>総額 − 源泉税 = 振込額</code>（成り立つ整数の総額が2つあるときは大きい方）</p>
+        </div>
+
+        <div class="feature-meta">
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">支払報酬・支払手数料</span>
+            <span class="feature-meta-value">種類: 一般の報酬／司法書士等。振込額は貸方1行目から読み、総額を借方1行目、源泉税を貸方2行目へ反映</span>
+          </div>
+          <div class="feature-meta-row">
+            <span class="feature-meta-label">受取配当金</span>
+            <span class="feature-meta-value">種類: 上場株式／非上場・大口。振込額は借方1行目から読み、総額を貸方1行目、源泉税を借方2行目へ反映</span>
+          </div>
+        </div>
+        <p class="section-desc">
+          2行目の勘定科目（預り金・法人税等など）は問いません。2行目の金額欄がない場合は、何も反映せずエラーを表示します（司法書士等で源泉税が0円になる場合は、総額のみ反映します）。ポップアップの「源泉税の計算（報酬・配当）」チェックボックスで ON/OFF できます（デフォルト: ON）。
+        </p>
       </section>
 
       <!-- 機能詳細③: 摘要の検索ボタン -->
