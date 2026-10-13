@@ -1,0 +1,618 @@
+/* MFCA Labs 紹介ページ
+   構成: 1 変数 / 2 基本 / 3 ヒーロー / 4 レイアウトと目次 / 5 できること（カード） /
+         6 機能の説明（見出し・メタ情報・表・折りたたみ・画像） / 7 重要事項 / 8 補助 */
+
+/* ---------- 1 変数 ---------- */
+:root {
+  color-scheme: light dark;
+
+  --text: #1a1a1a;
+  --muted: #555;
+  --bg: #fff;
+  --surface: #f6f7f9;
+  --border: #ddd;
+  --link: #1a5490;
+  --accent: #1a5490;
+  --accent-hover: #133f6e;
+  --accent-soft: #e8f0f8;
+  --shadow: rgba(0, 0, 0, 0.08);
+
+  --radius: 10px;
+  --radius-sm: 6px;
+  --gutter: clamp(1rem, 5vw, 3rem);
+  --toc-width: 14.5rem;
+  --header-gap: 1.25rem; /* 目次・アンカー移動で上端に確保する余白 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #f0f0f0;
+    --muted: #b0b0b0;
+    --bg: #121212;
+    --surface: #1e1e1e;
+    --border: #333;
+    --link: #9dc8ea;
+    --accent: #4a90d9;
+    --accent-hover: #6aaae4;
+    --accent-soft: #1c2a3a;
+    --shadow: rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ---------- 2 基本 ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  line-height: 1.75;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  color: var(--link);
+}
+
+a:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  overflow-wrap: anywhere;
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 0.85em;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0.05em 0.45em;
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -4rem;
+  z-index: 10;
+  background: var(--bg);
+  color: var(--link);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 10px var(--shadow);
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+/* ---------- 3 ヒーロー ---------- */
+.hero {
+  background: #1a5490;
+  color: #fff;
+  padding: 3rem 0 3.5rem;
+}
+
+.hero-inner {
+  max-width: 70rem;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.hero-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.hero h1 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1.4;
+  margin: 1.25rem 0 0;
+}
+
+.hero-sub {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0.5rem 0 0;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.btn-install {
+  display: inline-block;
+  background: #fff;
+  color: #1a5490;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.97rem;
+  padding: 0.7em 1.6em;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.btn-install:hover {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.hero-link {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.hero a:focus-visible {
+  outline-color: #fff;
+}
+
+/* ---------- 4 レイアウトと目次 ---------- */
+.layout {
+  max-width: 70rem;
+  margin: 0 auto;
+  padding: 2rem var(--gutter) 4rem;
+}
+
+main {
+  min-width: 0; /* 表・コードがはみ出しても、グリッドが広がらないようにする */
+}
+
+.toc {
+  display: none; /* 狭い画面では「できること」のカードを目次として使う */
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    display: grid;
+    grid-template-columns: var(--toc-width) minmax(0, 1fr);
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .toc {
+    display: block;
+    position: sticky;
+    top: var(--header-gap);
+    max-height: calc(100vh - 2 * var(--header-gap));
+    overflow-y: auto;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding-right: 0.5rem;
+  }
+}
+
+.toc-title {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.toc ol,
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc > ol > li {
+  margin-bottom: 0.15rem;
+}
+
+.toc a {
+  display: block;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.toc a:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.toc-group > a {
+  margin-top: 0.7rem;
+  font-weight: 700;
+}
+
+.toc-group ul a {
+  padding-left: 1.3rem;
+  color: var(--muted);
+}
+
+/* アンカー移動時に見出しが画面端に張り付かないようにする */
+:target,
+[id] {
+  scroll-margin-top: var(--header-gap);
+}
+
+/* ---------- 5 できること（カード） ---------- */
+.overview-group + .overview-group {
+  margin-top: 1.75rem;
+}
+
+.overview-group-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.feature-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.9rem;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.feature-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.card-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 0.15rem;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 0.97rem;
+  line-height: 1.45;
+}
+
+.card-desc {
+  margin: 0;
+  font-size: 0.87rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---------- 6 機能の説明 ---------- */
+.page-section {
+  margin-bottom: 3.5rem;
+}
+
+.page-section > h2 {
+  margin: 0 0 1.25rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  background: var(--accent-soft);
+  border-left: 5px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.group-lead {
+  margin: -0.5rem 0 1.75rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.feature {
+  margin-bottom: 2.75rem;
+}
+
+.feature:last-child {
+  margin-bottom: 0;
+}
+
+.feature > h3 {
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.35rem;
+  font-size: 1.15rem;
+  line-height: 1.45;
+  border-bottom: 2px solid var(--border);
+}
+
+.lead {
+  margin: 0.75rem 0 1rem;
+  font-size: 1rem;
+}
+
+.feature p {
+  margin: 0 0 1rem;
+}
+
+/* 対象画面・操作方法などの要点（dl） */
+.meta {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.meta > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+}
+
+.meta > div + div {
+  margin-top: 0.5rem;
+}
+
+.meta dt {
+  flex: 0 0 auto;
+  min-width: 6.5em;
+  padding: 0.1em 0.6em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.meta dd {
+  flex: 1 1 14rem;
+  margin: 0;
+}
+
+/* 注意・補足 */
+.note {
+  margin: 0 0 1.25rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.92rem;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.note > :last-child {
+  margin-bottom: 0;
+}
+
+.note p {
+  margin: 0 0 0.4rem;
+}
+
+/* 表（計算式・キー操作） */
+.table-wrap {
+  margin: 0 0 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.table-wrap table {
+  width: 100%;
+  min-width: 30rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.table-wrap table.compact {
+  min-width: 0; /* 2列の表は、狭い画面でも横スクロールせず折り返す */
+}
+
+.table-wrap caption {
+  padding: 0.55rem 0.9rem;
+  text-align: left;
+  font-weight: 700;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.table-wrap th,
+.table-wrap td {
+  padding: 0.55rem 0.9rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-wrap thead th {
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: var(--surface);
+  white-space: nowrap;
+}
+
+.table-wrap tbody tr:last-child th,
+.table-wrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-wrap tbody th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 折りたたみ（詳しい使い方） */
+.more {
+  margin: 0 0 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.more > summary {
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.more > summary::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.45em;
+  height: 0.45em;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+
+.more[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.more[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.more > :not(summary) {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.more > summary + * {
+  margin-top: 0.9rem;
+}
+
+.more > :last-child {
+  margin-bottom: 1rem;
+}
+
+.more ul,
+.more ol {
+  padding-left: 1.4rem;
+}
+
+.more li {
+  margin-bottom: 0.3rem;
+}
+
+/* スクリーンショット */
+.shot {
+  margin: 1rem 0 1.5rem;
+}
+
+.shot img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.shot figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- 7 重要事項 ---------- */
+.notice {
+  margin-top: 1rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.93rem;
+}
+
+.notice h2 {
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  font-size: 1.15rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.notice h3 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 0.97rem;
+}
+
+.notice h3:first-of-type {
+  margin-top: 0;
+}
+
+.notice p {
+  margin: 0 0 0.6rem;
+}
+
+.notice ul {
+  margin: 0 0 0.6rem;
+  padding-left: 1.4rem;
+}
+
+.notice li {
+  margin-bottom: 0.35rem;
+}
+
+/* ---------- 8 補助 ---------- */
+.back-to-top {
+  display: block;
+  margin-top: 2rem;
+  font-size: 0.88rem;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .feature-card,
+  .btn-install,
+  .more > summary::before {
+    transition: none;
+  }
+}

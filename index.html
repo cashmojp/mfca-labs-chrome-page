@@ -3,722 +3,684 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1a5490" />
     <title>MFCA Labs — マネーフォワード クラウド会計向け Chrome 拡張機能</title>
     <meta
       name="description"
-      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・摘要検索ボタン・金額の合計コピー・仕訳のコピー・ルール適用のみチェックを提供します。"
+      content="マネーフォワード クラウド会計の入力を効率化する非公式 Chrome 拡張機能「MFCA Labs」。日付ショートカット・受取利息の自動計算・源泉税の計算・摘要検索ボタン・証憑サイドパネル・金額の合計コピー・仕訳のコピーなどを提供します。"
     />
-    <style>
-      :root {
-        color-scheme: light dark;
-        --text: #1a1a1a;
-        --muted: #555;
-        --bg: #fff;
-        --surface: #f6f7f9;
-        --border: #ddd;
-        --link: #1a5490;
-        --accent: #1a5490;
-        --accent-hover: #133f6e;
-        --shadow: rgba(0, 0, 0, 0.08);
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --text: #f0f0f0;
-          --muted: #b0b0b0;
-          --bg: #121212;
-          --surface: #1e1e1e;
-          --border: #333;
-          --link: #9dc8ea;
-          --accent: #4a90d9;
-          --accent-hover: #6aaae4;
-          --shadow: rgba(0, 0, 0, 0.4);
-        }
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans",
-          "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-        line-height: 1.75;
-        color: var(--text);
-        background: var(--bg);
-      }
-
-      /* コンテナ */
-      .container {
-        max-width: 54rem;
-        margin: 0 auto;
-        padding: 0 clamp(1rem, 5vw, 3rem);
-      }
-
-      /* ヒーローセクション */
-      .hero {
-        background: #1a5490;
-        color: #fff;
-        padding: 3rem 0 3.5rem;
-      }
-      .hero-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-      .hero-logo span {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #fff;
-      }
-      .hero h1 {
-        font-size: clamp(1.5rem, 4vw, 2.25rem);
-        font-weight: 700;
-        color: #fff;
-        margin: 1.25rem 0 0;
-        line-height: 1.4;
-      }
-      .hero-sub {
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.75);
-        margin: 0.5rem 0 0;
-      }
-
-      /* CTAボタン（ヒーロー内） */
-      .btn-install {
-        display: inline-block;
-        background: #fff;
-        color: #1a5490;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.97rem;
-        padding: 0.7em 1.6em;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: background 0.15s;
-        margin-top: 1.5rem;
-      }
-      .btn-install:hover {
-        background: rgba(255, 255, 255, 0.88);
-        color: #1a5490;
-      }
-      @media (prefers-color-scheme: dark) {
-        .btn-install {
-          background: #fff;
-          color: #1a5490;
-        }
-        .btn-install:hover {
-          background: rgba(255, 255, 255, 0.88);
-          color: #1a5490;
-        }
-      }
-
-      /* メインコンテンツ */
-      main.container {
-        padding-top: 1.5rem;
-        padding-bottom: 4rem;
-      }
-
-      /* 機能サマリー帯 */
-      .features-band {
-        background: var(--surface);
-        margin-top: 0;
-        margin-right: calc(-1 * clamp(1rem, 5vw, 3rem));
-        margin-bottom: 2.5rem;
-        margin-left: calc(-1 * clamp(1rem, 5vw, 3rem));
-        padding: 1.75rem clamp(1rem, 5vw, 3rem);
-        border-radius: 10px;
-      }
-      .features-band h2 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 0 0 1.25rem;
-      }
-      .feature-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-        gap: 1rem;
-      }
-      .feature-card {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 1.25rem;
-        text-decoration: none;
-        color: var(--text);
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        transition: border-color 0.15s, box-shadow 0.15s;
-      }
-      .feature-card:hover {
-        border-color: var(--accent);
-        box-shadow: 0 2px 12px var(--shadow);
-      }
-      .card-icon {
-        line-height: 1;
-      }
-      .card-title {
-        font-weight: 700;
-        font-size: 0.97rem;
-      }
-      .card-desc {
-        font-size: 0.88rem;
-        color: var(--muted);
-        line-height: 1.6;
-        margin: 0;
-      }
-
-      /* 重要事項 */
-      .important-notice {
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 1.25rem 1.5rem;
-        margin-bottom: 0;
-        font-size: 0.93rem;
-      }
-      .important-notice h2 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 0 0 1.25rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border);
-      }
-      .important-notice h3 {
-        font-size: 0.97rem;
-        font-weight: 700;
-        margin: 1.25rem 0 0.4rem;
-      }
-      .important-notice h3:first-of-type {
-        margin-top: 0;
-      }
-      .important-notice p {
-        margin: 0 0 0.6rem;
-      }
-      .important-notice ul {
-        margin: 0 0 0.6rem;
-        padding-left: 1.4rem;
-      }
-      .important-notice li {
-        margin-bottom: 0.35rem;
-      }
-
-      /* セクション */
-      .section {
-        margin-bottom: 3rem;
-      }
-      .section h2 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem;
-        padding-bottom: 0.4rem;
-        border-bottom: 2px solid var(--border);
-        line-height: 1.4;
-      }
-      .section .section-desc {
-        margin: 0.75rem 0 1.25rem;
-        font-size: 0.97rem;
-      }
-      .section p {
-        margin: 0 0 1rem;
-      }
-
-      /* 機能メタ情報 */
-      .feature-meta {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 0.75rem 1rem;
-        margin: 0.75rem 0 1.25rem;
-        font-size: 0.9rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-      }
-      .feature-meta-row {
-        display: flex;
-        align-items: baseline;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-      }
-      .feature-meta-label {
-        display: inline-block;
-        font-size: 0.78rem;
-        font-weight: 600;
-        padding: 0.15em 0.55em;
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        color: var(--muted);
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .feature-meta-value {
-        color: var(--text);
-        font-size: 0.9rem;
-      }
-
-      /* スクリーンショット */
-      .screenshot {
-        display: block;
-        max-width: 100%;
-        height: auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px var(--shadow);
-        border: 1px solid var(--border);
-        margin: 1rem 0 1.5rem;
-      }
-      .screenshot-caption {
-        font-size: 0.85rem;
-        color: var(--muted);
-        margin: -0.75rem 0 1.5rem;
-        text-align: center;
-      }
-
-      /* 計算式ブロック */
-      .formula-block {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 1rem 1.25rem;
-        margin: 1rem 0 1.25rem;
-        font-size: 0.92rem;
-      }
-      .formula-block p {
-        margin: 0.25rem 0;
-      }
-      .formula-block code {
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
-          monospace;
-        font-size: 0.9em;
-        background: var(--border);
-        padding: 0.1em 0.35em;
-        border-radius: 3px;
-      }
-
-      code {
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
-          monospace;
-        font-size: 0.9em;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        padding: 0.1em 0.4em;
-        border-radius: 3px;
-      }
-
-      a {
-        color: var(--link);
-      }
-    </style>
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main">本文へ移動</a>
 
-    <!-- ヒーローセクション -->
-    <header class="hero">
-      <div class="container">
+    <!-- ヒーロー -->
+    <header class="hero" id="top">
+      <div class="hero-inner">
         <div class="hero-logo">
           <img src="./icon.svg" width="36" height="36" alt="" />
           <span>MFCA Labs</span>
         </div>
-        <h1>マネーフォワード クラウド会計の<br>入力をもっとスムーズに</h1>
+        <h1>マネーフォワード クラウド会計の<br />入力をもっとスムーズに</h1>
         <p class="hero-sub">非公式 Chrome 拡張機能 ― 株式会社キャシュモ開発</p>
-        <a
-          href="https://chromewebstore.google.com/detail/mfca-labs/edpgggmdgeneaokhlinphdaphigiifca"
-          class="btn-install"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Chrome ウェブストアからインストール</a>
+        <div class="hero-actions">
+          <a
+            href="https://chromewebstore.google.com/detail/mfca-labs/edpgggmdgeneaokhlinphdaphigiifca"
+            class="btn-install"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Chrome ウェブストアからインストール</a
+          >
+          <a class="hero-link" href="#features">できることを見る ↓</a>
+        </div>
       </div>
     </header>
 
-    <!-- メインコンテンツ -->
-    <main class="container">
+    <div class="layout">
+      <!-- 目次（広い画面でのみ表示。狭い画面では「できること」のカードが目次の代わり） -->
+      <nav class="toc" aria-label="目次">
+        <p class="toc-title">目次</p>
+        <ol>
+          <li><a href="#features">できること</a></li>
+          <li><a href="#setup">インストール後の設定</a></li>
+          <li class="toc-group">
+            <a href="#group-input">入力を助ける</a>
+            <ul>
+              <li><a href="#feature-date">日付ショートカット</a></li>
+              <li><a href="#feature-interest">受取利息の自動計算</a></li>
+              <li><a href="#feature-withholding">源泉税の計算（報酬・配当）</a></li>
+              <li><a href="#feature-search">摘要の検索ボタン</a></li>
+            </ul>
+          </li>
+          <li class="toc-group">
+            <a href="#group-check">確認・集計する</a>
+            <ul>
+              <li><a href="#feature-evidence-panel">証憑サイドパネル</a></li>
+              <li><a href="#feature-month-end-marker">月が変わる行の目印</a></li>
+              <li><a href="#feature-amount">金額の合計・コピー</a></li>
+              <li><a href="#feature-rule-auto-checker">ルール適用のみチェック</a></li>
+            </ul>
+          </li>
+          <li class="toc-group">
+            <a href="#group-copy">コピー・まとめて開く</a>
+            <ul>
+              <li><a href="#feature-journal-copy">仕訳のコピー</a></li>
+              <li><a href="#feature-trial-balance-link-opener">科目リンクの一括オープン</a></li>
+            </ul>
+          </li>
+          <li><a href="#notice">重要事項のご案内</a></li>
+        </ol>
+      </nav>
 
-      <!-- 機能サマリー -->
-      <div class="features-band">
-        <h2>できること</h2>
-        <div class="feature-cards">
-          <a href="#feature-date" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
-              </svg>
+      <main id="main">
+        <!-- できること（機能の一覧） -->
+        <section class="page-section" id="features" aria-labelledby="features-title">
+          <h2 id="features-title">できること</h2>
+
+          <div class="overview-group">
+            <h3 class="overview-group-title">入力を助ける</h3>
+            <div class="feature-cards">
+              <a href="#feature-date" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
+                </svg>
+                <span class="card-title">日付ショートカット</span>
+                <p class="card-desc">「期首」「先月末」など 7 つのボタンをワンクリックで日付欄に反映。表示するボタンは選べます</p>
+              </a>
+              <a href="#feature-interest" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="4" y="2" width="16" height="20" rx="2" />
+                  <path d="M8 7h8M8 12h2M12 12h2M16 12h2M8 16h2M12 16h2M16 16h2" />
+                </svg>
+                <span class="card-title">受取利息の自動計算</span>
+                <p class="card-desc">手取り額から受取利息と源泉税を逆算して金額欄へ自動入力。仕訳帳の編集行でも使えます</p>
+              </a>
+              <a href="#feature-withholding" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="4" y="2" width="16" height="20" rx="2" />
+                  <path d="M8 7h8M9 17l6-6M9.5 11.5h.01M14.5 16.5h.01" />
+                </svg>
+                <span class="card-title">源泉税の計算（報酬・配当）</span>
+                <p class="card-desc">振込額から総額と源泉税を割り戻して反映。種類（一般の報酬／司法書士等／上場株式／非上場・大口）を選べます</p>
+              </a>
+              <a href="#feature-search" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="M16.5 16.5L21 21" />
+                </svg>
+                <span class="card-title">摘要の検索ボタン</span>
+                <p class="card-desc">連携サービスから入力の摘要を、ワンクリックで仕訳帳検索・Google 検索</p>
+              </a>
             </div>
-            <div class="card-title">日付ショートカット</div>
-            <p class="card-desc">「期首」「先月末」など6種のショートカットボタンをワンクリックで日付欄に反映。ホバーで挿入日付（MM/DD 形式）を確認できます</p>
-          </a>
-          <a href="#feature-interest" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="2" width="16" height="20" rx="2"/>
-                <path d="M8 7h8M8 12h2M12 12h2M16 12h2M8 16h2M12 16h2M16 16h2"/>
-              </svg>
+          </div>
+
+          <div class="overview-group">
+            <h3 class="overview-group-title">確認・集計する</h3>
+            <div class="feature-cards">
+              <a href="#feature-evidence-panel" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M14 3v18M17 8h2M17 12h2M17 16h2" />
+                </svg>
+                <span class="card-title">証憑サイドパネル</span>
+                <p class="card-desc">証憑（画像・PDF）を右のパネルに表示して、仕訳と見比べられます。キーボードでも操作できます</p>
+              </a>
+              <a href="#feature-month-end-marker" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18M3 16h18" />
+                </svg>
+                <span class="card-title">月が変わる行の目印</span>
+                <p class="card-desc">元帳で、月が変わる行に「月末」ラベルと太線を表示。月ごとの区切りが一目で分かります</p>
+              </a>
+              <a href="#feature-amount" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M3 9h18M9 21V9M3 15h6" />
+                </svg>
+                <span class="card-title">金額の合計・コピー</span>
+                <p class="card-desc">金額セルを選ぶだけで合計・差分をリアルタイム表示。ダブルクリックでコピー</p>
+              </a>
+              <a href="#feature-rule-auto-checker" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M8 12l3 3 5-6" />
+                </svg>
+                <span class="card-title">ルール適用のみチェック</span>
+                <p class="card-desc">自動仕訳ルールが適用された行だけをワンクリックで一括選択。「続きを表示」も自動で展開します</p>
+              </a>
             </div>
-            <div class="card-title">受取利息の自動計算</div>
-            <p class="card-desc">手取り額から受取利息と源泉税を逆算して金額欄へ自動入力（摘要は変更しません）。仕訳帳の編集行でも使えます</p>
-          </a>
-          <a href="#feature-withholding" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="2" width="16" height="20" rx="2"/>
-                <path d="M8 7h8M9 17l6-6M9.5 11.5h.01M14.5 16.5h.01"/>
-              </svg>
+          </div>
+
+          <div class="overview-group">
+            <h3 class="overview-group-title">コピー・まとめて開く</h3>
+            <div class="feature-cards">
+              <a href="#feature-journal-copy" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                <span class="card-title">仕訳のコピー</span>
+                <p class="card-desc">5 画面に対応。相手勘定つきの整形テキストで、1 行ずつも複数行まとめてもコピーできます</p>
+              </a>
+              <a href="#feature-trial-balance-link-opener" class="feature-card">
+                <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="2" y="9" width="10" height="10" rx="1" stroke-dasharray="3 2" />
+                  <path d="M16 3h5v5M21 3l-6 6" />
+                  <path d="M15 11v6a2 2 0 0 1-2 2H6" />
+                </svg>
+                <span class="card-title">科目リンクの一括オープン</span>
+                <p class="card-desc">試算表で Cmd/Ctrl +ドラッグした範囲の科目リンクを、まとめて新しいタブで開きます。通常の操作には影響しません</p>
+              </a>
             </div>
-            <div class="card-title">源泉税の計算（報酬・配当）</div>
-            <p class="card-desc">支払報酬・支払手数料や受取配当金の振込額から、総額と源泉税を割り戻して金額欄へ反映。種類（一般の報酬／司法書士等／上場株式／非上場・大口）を選べます</p>
-          </a>
-          <a href="#feature-search" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="7"/>
-                <path d="M16.5 16.5L21 21"/>
-              </svg>
+          </div>
+          <!-- 機能カードを追加するときは、該当グループの feature-cards に追加し、目次（nav.toc）と機能の説明（下の各セクション）にも対応する項目を足す -->
+        </section>
+
+        <!-- インストール後の設定 -->
+        <section class="page-section" id="setup" aria-labelledby="setup-title">
+          <h2 id="setup-title">インストール後の設定</h2>
+          <p>
+            ツールバーの MFCA Labs アイコンをクリックするとポップアップが開き、次の機能をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
+          </p>
+          <ul>
+            <li>日付ショートカット</li>
+            <li>受取利息の自動計算</li>
+            <li>源泉税の計算（報酬・配当）</li>
+            <li>摘要の検索ボタン</li>
+            <li>金額の合計・コピー</li>
+            <li>仕訳のコピー（「仕訳Noをコピーに含める」を含む）</li>
+            <li>科目リンクの一括オープン</li>
+            <li>ルール適用のみチェック</li>
+            <li>証憑サイドパネル</li>
+            <li>月が変わる行の目印</li>
+          </ul>
+          <figure class="shot">
+            <img
+              src="./mfca-labs-home-extension-popup-1280x800.png"
+              alt="ポップアップUI — 機能のオン/オフ切り替え画面"
+              width="1280"
+              height="800"
+            />
+            <figcaption>ポップアップで各機能を個別に有効/無効にできます</figcaption>
+          </figure>
+        </section>
+
+        <!-- ① 入力を助ける -->
+        <section class="page-section" id="group-input" aria-labelledby="group-input-title">
+          <h2 id="group-input-title">入力を助ける</h2>
+          <p class="group-lead">仕訳の入力・登録の画面で、手入力や計算の手間を減らします。</p>
+
+          <article class="feature" id="feature-date">
+            <h3>日付ショートカット</h3>
+            <p class="lead">
+              日付入力欄のカレンダー付近に 7 つのショートカットボタンが表示されます。クリックするだけで、フォーカス中の日付欄に日付が反映されます。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>仕訳入力・検索など、日付入力欄がある全画面</dd>
+              </div>
+              <div>
+                <dt>使うとき</dt>
+                <dd>日付入力欄をクリックしてカレンダー（jQuery UI カレンダー）を開いたとき</dd>
+              </div>
+            </dl>
+            <p>
+              ボタンは「期首」「先々月初」「先々月末」「先月初」「先月末」「今月初」「今月末」の 7 つです。各ボタンにホバーすると、挿入される日付が MM/DD 形式（例: 04/01）でツールチップに表示されます。歯車アイコンから、表示するボタンを選べます。
+            </p>
+            <figure class="shot">
+              <img
+                src="./mfca-labs-date-shortcuts-1280x800.png"
+                alt="日付ショートカット機能 — カレンダー付近にショートカットボタンが表示された画面"
+                width="1280"
+                height="800"
+                loading="lazy"
+              />
+              <figcaption>日付入力欄の近くにショートカットボタンが表示されます</figcaption>
+            </figure>
+          </article>
+
+          <article class="feature" id="feature-interest">
+            <h3>受取利息の自動計算</h3>
+            <p class="lead">
+              貸方に「受取利息」を選ぶと「利息を計算」ボタンが表示されます。手取り額から受取利息の総額と源泉所得税を計算して、金額欄へ反映します。摘要は変更しません。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>連携サービスから入力（/transaction_journals）の展開行、仕訳帳（/books）の編集行</dd>
+              </div>
+              <div>
+                <dt>使うとき</dt>
+                <dd>貸方科目で「受取利息」を選択したとき</dd>
+              </div>
+            </dl>
+            <p>
+              借方の入金額（手取り額）を入力してボタンをクリックすると、受取利息の総額と源泉所得税額を自動計算して金額欄へ反映します。先に単一仕訳で登録した仕訳も、仕訳帳の詳細ボタンから編集して複合仕訳にすれば、その編集行で計算できます。
+            </p>
+            <div class="table-wrap">
+              <table class="compact">
+                <caption>計算式</caption>
+                <thead>
+                  <tr><th scope="col">項目</th><th scope="col">計算</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">手取り率</th><td><code>1 − 15.315% = 0.84685</code></td></tr>
+                  <tr><th scope="row">受取利息（総額）</th><td><code>入金額 ÷ 0.84685（切り捨て）</code></td></tr>
+                  <tr><th scope="row">源泉所得税額</th><td><code>受取利息総額 − 入金額</code></td></tr>
+                </tbody>
+              </table>
             </div>
-            <div class="card-title">摘要の検索ボタン</div>
-            <p class="card-desc">連携サービスから入力の摘要をワンクリックで仕訳帳検索・Google 検索</p>
-          </a>
-          <a href="#feature-amount" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <path d="M3 9h18M9 21V9M3 15h6"/>
-              </svg>
+            <figure class="shot">
+              <img
+                src="./mfca-labs-interest-calculator-1280x800.png"
+                alt="受取利息の自動計算 — 利息計算ボタンの表示画面"
+                width="1280"
+                height="800"
+                loading="lazy"
+              />
+              <figcaption>利息の計算ボタンが表示されます</figcaption>
+            </figure>
+          </article>
+
+          <article class="feature" id="feature-withholding">
+            <h3>源泉税の計算（報酬・配当）</h3>
+            <p class="lead">
+              支払報酬・支払手数料・受取配当金の仕訳で、振込額（手取り額）から総額と源泉税を割り戻して金額欄へ反映します。種類（税率）は選べます。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>連携サービスから入力（/transaction_journals）の展開行、仕訳帳（/books）の編集行</dd>
+              </div>
+              <div>
+                <dt>使うとき</dt>
+                <dd>借方が「支払報酬」「支払手数料」、または貸方が「受取配当金」の行</dd>
+              </div>
+            </dl>
+            <p>
+              勘定科目セルの下に、種類を選ぶドロップダウンと「源泉税を計算」ボタンが表示されます。振込額（手取り額）を入力してボタンをクリックすると、総額と源泉税を割り戻して金額欄へ反映します。選んだ種類は勘定科目ごとに記憶されます。ドロップダウン横の「?」にカーソルを合わせると、税率・計算式と今回の計算結果を確認できます。摘要や勘定科目は変更しません。
+            </p>
+            <div class="table-wrap">
+              <table>
+                <caption>種類と源泉税（総額を G とします。1円未満は切り捨て）</caption>
+                <thead>
+                  <tr><th scope="col">種類</th><th scope="col">対象の勘定科目</th><th scope="col">源泉税</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">一般の報酬</th>
+                    <td>支払報酬・支払手数料</td>
+                    <td><code>G ≦ 100万円 → G × 10.21%</code><br /><code>G &gt; 100万円 → 102,100円 + (G − 100万円) × 20.42%</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">司法書士等</th>
+                    <td>支払報酬・支払手数料</td>
+                    <td><code>G ≦ 1万円 → 0円</code><br /><code>G &gt; 1万円 → (G − 1万円) × 10.21%</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">上場株式の配当</th>
+                    <td>受取配当金</td>
+                    <td><code>G × 15.315%</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">非上場・大口の配当</th>
+                    <td>受取配当金</td>
+                    <td><code>G × 20.42%</code></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="card-title">金額の合計・コピー</div>
-            <p class="card-desc">右下の「合計/差分」ボタンでモードON、金額をクリック/ドラッグ選択して合計・差分をリアルタイム表示、ダブルクリックでコピー</p>
-          </a>
-          <a href="#feature-journal-copy" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2"/>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-              </svg>
+            <p>
+              振込額から総額を割り戻す式は <code>総額 − 源泉税 = 振込額</code> です（成り立つ整数の総額が 2 つあるときは大きい方）。
+            </p>
+            <div class="table-wrap">
+              <table>
+                <caption>反映先</caption>
+                <thead>
+                  <tr><th scope="col">科目</th><th scope="col">振込額を読む場所</th><th scope="col">総額</th><th scope="col">源泉税</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">支払報酬・支払手数料</th><td>貸方1行目</td><td>借方1行目</td><td>貸方2行目</td></tr>
+                  <tr><th scope="row">受取配当金</th><td>借方1行目</td><td>貸方1行目</td><td>借方2行目</td></tr>
+                </tbody>
+              </table>
             </div>
-            <div class="card-title">仕訳のコピー</div>
-            <p class="card-desc">仕訳一覧・仕訳帳・元帳など5画面に対応。1行コピーと仕訳のテキスト化（2行コピー・1行コピーの2形式）で相手勘定つき整形コピーを提供</p>
-          </a>
-          <a href="#feature-trial-balance-link-opener" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="9" width="10" height="10" rx="1" stroke-dasharray="3 2"/>
-                <path d="M16 3h5v5M21 3l-6 6"/>
-                <path d="M15 11v6a2 2 0 0 1-2 2H6"/>
-              </svg>
+            <details class="more">
+              <summary>2行目の扱い・ON/OFF</summary>
+              <p>
+                2行目の勘定科目（預り金・法人税等など）は問いません。2行目の金額欄がない場合は、何も反映せずエラーを表示します（司法書士等で源泉税が0円になる場合は、総額のみ反映します）。ポップアップの「源泉税の計算（報酬・配当）」チェックボックスで ON/OFF できます（デフォルト: ON）。
+              </p>
+            </details>
+          </article>
+
+          <article class="feature" id="feature-search">
+            <h3>摘要の検索ボタン</h3>
+            <p class="lead">
+              連携サービスから入力の各行の摘要セル付近に「仕訳帳で検索」と「Google 検索」ボタンが表示され、摘要をワンクリックで検索できます。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>連携サービスから入力（/transaction_journals）</dd>
+              </div>
+              <div>
+                <dt>使うとき</dt>
+                <dd>常時表示（各行の摘要セル付近）</dd>
+              </div>
+            </dl>
+            <p>
+              「仕訳帳で検索」は摘要テキストで絞り込み検索します。「Google 検索」は同じテキストで Google 検索を開きます。
+            </p>
+            <p class="note">
+              「Google 検索」ボタンを押したときだけ、その摘要が検索語として Google に送信されます。ボタンを押さない限り、送信されません。
+            </p>
+            <figure class="shot">
+              <img
+                src="./mfca-labs-linked-services-input-1280x800.png"
+                alt="摘要の検索ボタン — 各行に仕訳帳で検索・Google検索ボタンが表示された画面"
+                width="1280"
+                height="800"
+                loading="lazy"
+              />
+              <figcaption>各行の摘要セル付近に「仕訳帳」「Google」ボタンが表示されます</figcaption>
+            </figure>
+          </article>
+
+          <a class="back-to-top" href="#top">↑ ページの先頭へ</a>
+        </section>
+
+        <!-- ② 確認・集計する -->
+        <section class="page-section" id="group-check" aria-labelledby="group-check-title">
+          <h2 id="group-check-title">確認・集計する</h2>
+          <p class="group-lead">元帳や連携サービスの画面で、確認や選択の作業を助けます。</p>
+
+          <article class="feature" id="feature-evidence-panel">
+            <h3>証憑サイドパネル</h3>
+            <p class="lead">
+              証憑がある行の「証憑 ▶」を押すと、右のパネルに証憑（画像・PDF）が表示されます。ページを左へ押し除けて表示するので、仕訳と見比べながら確認できます。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）・現預金出納帳（/books/receipt_journal）</dd>
+              </div>
+              <div>
+                <dt>使うとき</dt>
+                <dd>証憑がある行の「証憑 ▶」を押したとき（元のクリップアイコンの動作は変わりません）</dd>
+              </div>
+              <div>
+                <dt>操作</dt>
+                <dd>拡大・縮小・回転、複数枚（複数ページ）の切り替え（‹ ›）、キーボード操作</dd>
+              </div>
+            </dl>
+            <div class="table-wrap">
+              <table class="compact">
+                <caption>キーボード操作</caption>
+                <thead>
+                  <tr><th scope="col">キー</th><th scope="col">動作</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row"><kbd>↑</kbd> <kbd>↓</kbd></th><td>行の移動（ページ末尾で <kbd>↓</kbd> を押すと次ページの先頭行、先頭で <kbd>↑</kbd> を押すと前ページの最後の行）</td></tr>
+                  <tr><th scope="row"><kbd>←</kbd> <kbd>→</kbd></th><td>証憑の前後（行を選択しているとき）</td></tr>
+                  <tr><th scope="row"><kbd>Home</kbd> <kbd>End</kbd></th><td>最初の行・最後の行</td></tr>
+                  <tr><th scope="row"><kbd>Esc</kbd></th><td>選択解除（行を選択しているとき）</td></tr>
+                  <tr><th scope="row"><kbd>\</kbd> または <kbd>¥</kbd></th><td>パネルの開閉</td></tr>
+                </tbody>
+              </table>
             </div>
-            <div class="card-title">科目リンクの一括オープン</div>
-            <p class="card-desc">試算表でCmd（Mac）/Ctrl（Win/Linux）+左ドラッグするだけで、範囲内の科目リンクをまとめて新しいタブで開きます。通常の操作には一切影響しません</p>
-          </a>
-          <a href="#feature-rule-auto-checker" class="feature-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <path d="M8 12l3 3 5-6"/>
-              </svg>
-            </div>
-            <div class="card-title">ルール適用のみチェック</div>
-            <p class="card-desc">連携サービスから入力で、自動仕訳ルールが適用された行だけをワンクリックで一括選択。「続きを表示」も自動で展開します</p>
-          </a>
-          <!-- 機能カードをここに追加 -->
-        </div>
-      </div>
+            <p class="note">
+              この機能が ON の間は、元帳画面で <kbd>↑</kbd><kbd>↓</kbd> と <kbd>Home</kbd><kbd>End</kbd> を行の移動に使うため、これらのキーでは画面をスクロールできません。入力欄にフォーカスがあるときや、<kbd>Ctrl</kbd>・<kbd>Cmd</kbd>・<kbd>Alt</kbd>・<kbd>Shift</kbd> を併用したときは反応しません。
+            </p>
+            <details class="more">
+              <summary>証憑の取り扱いについて</summary>
+              <ul>
+                <li>証憑を取得するため、マネーフォワード クラウド会計の標準の証憑プレビューを、画面の外で自動的に開閉します。</li>
+                <li>証憑はブラウザ内で右のパネルに表示するだけで、保存や外部への送信は行いません。</li>
+                <li>表示した証憑は、ブラウザのメモリに一時的に保持します（最大 20 行分・合計 100MB まで）。ページを再読み込みすると消えます。</li>
+                <li>ポップアップの「証憑サイドパネル」チェックボックスで ON/OFF できます（デフォルト: ON）。</li>
+              </ul>
+            </details>
+            <!-- TODO: スクリーンショットを追加する（個人情報・取引先名・金額を含まない画面で撮影すること） -->
+          </article>
 
-      <!-- インストール後の設定 -->
-      <section class="section">
-        <h2>インストール後の設定</h2>
-        <p class="section-desc">
-          ツールバーの MFCA Labs アイコンをクリックするとポップアップが開きます。「日付ショートカット」「受取利息の自動計算」「源泉税の計算（報酬・配当）」「摘要の検索ボタン」「金額の合計・コピー」「仕訳のコピー」「科目リンクの一括オープン」「ルール適用のみチェック」をチェックボックスで個別にオン/オフできます。設定は端末内に保存され、開いているタブに即時反映されます。
-        </p>
-        <img
-          src="./mfca-labs-home-extension-popup-1280x800.png"
-          alt="ポップアップUI — 機能のオン/オフ切り替え画面"
-          class="screenshot"
-        />
-        <p class="screenshot-caption">ポップアップで各機能を個別に有効/無効にできます</p>
-      </section>
+          <article class="feature" id="feature-month-end-marker">
+            <h3>月が変わる行の目印</h3>
+            <p class="lead">
+              次の行と月が違う行に「月末」ラベルと太線を表示します。元帳を上から読むときに、月ごとの区切りが一目で分かります。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）・現預金出納帳（/books/receipt_journal）</dd>
+              </div>
+              <div>
+                <dt>表示</dt>
+                <dd>取引日セルの左上に「月末」ラベル、行の下端に太線（背景は塗りません）</dd>
+              </div>
+            </dl>
+            <p class="note">
+              実際の月末日ではなく、「表示中の並びでその月の最後の行」の目印です。年は見ません。ページ最後の行には付きません。証憑サイドパネルがなくても使えます。ポップアップの「月が変わる行の目印」チェックボックスで ON/OFF できます（デフォルト: ON）。
+            </p>
+          </article>
 
-      <!-- 機能詳細①: 日付ショートカット -->
-      <section class="section" id="feature-date">
-        <h2>日付ショートカット</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">仕訳入力・検索など、日付入力欄がある全画面</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">起動タイミング</span>
-            <span class="feature-meta-value">日付入力欄をクリックしてカレンダーを開いたとき</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          日付入力欄（jQuery UI カレンダー）の付近に「期首」「先々月初」「先々月末」「先月初」「先月末」「今月末」の 6 つのショートカットボタンが表示されます。ボタンをクリックするだけで、フォーカス中の日付欄に日付が直接反映されます。各ボタンにホバーすると、挿入される日付が MM/DD 形式（例: 04/01）でツールチップに表示されます。
-        </p>
-        <img
-          src="./mfca-labs-date-shortcuts-1280x800.png"
-          alt="日付ショートカット機能 — カレンダー付近にショートカットボタンが表示された画面"
-          class="screenshot"
-        />
-        <p class="screenshot-caption">日付入力欄の近くにショートカットボタンが表示されます</p>
-      </section>
+          <article class="feature" id="feature-amount">
+            <h3>金額の合計・コピー</h3>
+            <p class="lead">
+              画面右下の「合計/差分」ボタンで金額選択モードをONにすると、選んだ金額セルの合計または差分がリアルタイムに表示され、ダブルクリックでコピーできます。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>仕訳帳（/books）・総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）・振替伝票（/journal_entry）</dd>
+              </div>
+              <div>
+                <dt>操作方法</dt>
+                <dd>右下の「合計/差分」ボタンでモードON → 金額セルをクリック/ドラッグ選択 → 合計または差分をダブルクリックでコピー</dd>
+              </div>
+            </dl>
+            <p>
+              通常時はクラウド会計本来の操作感を維持し、ボタンをクリックした時のみ金額選択モードがONになります。モード中に金額セルをクリック/ドラッグすると選択中の合計金額と件数がリアルタイムで表示され、合計の数値をダブルクリックするとクリップボードへコピーされます。<kbd>Esc</kbd> を 1 回押すと選択クリア、選択なし状態で <kbd>Esc</kbd> を押すとモード終了です。
+            </p>
+            <figure class="shot">
+              <img
+                src="./mfca-labs-amount-total-button-1280x800.png"
+                alt="金額の合計・コピー — 右下のバッジに合計/差分とコピー機能が表示された画面"
+                width="1280"
+                height="800"
+                loading="lazy"
+              />
+              <figcaption>右下の「合計/差分」ボタンでモードON → 金額をクリック/ドラッグ選択 → 合計または差分をダブルクリックでクリップボードへコピー</figcaption>
+            </figure>
+            <details class="more">
+              <summary>差分の表示と、複数セルの選び方</summary>
+              <p>
+                バッジ内のセグメントコントロール（[合計|差分]）をクリックすると合計⇄差分を切替できます。差分表示では借方基準の符号付き差額（例: 差 +¥600（5件））を表示し、ダブルクリックで差額の絶対値をコピーします。
+              </p>
+              <p>
+                起点セルをクリック後、<kbd>Shift</kbd>+クリックで同列の起点〜終点間を一括選択できます。<kbd>Ctrl</kbd>（Mac は <kbd>Cmd</kbd>）+クリックで既存の選択を保持したまま個別セルをトグル追加/除外することもできます（<kbd>Shift</kbd>+クリックと併存）。
+              </p>
+            </details>
+          </article>
 
-      <!-- 機能詳細②: 受取利息の自動計算 -->
-      <section class="section" id="feature-interest">
-        <h2>受取利息の自動計算</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）の展開行、仕訳帳（/books）の編集行</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">起動タイミング</span>
-            <span class="feature-meta-value">貸方科目で「受取利息」を選択したとき</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          「利息を計算」ボタンが表示されます。借方の入金額（手取り額）を入力してボタンをクリックすると、受取利息の総額と源泉所得税額を自動計算して金額欄へ反映します。摘要は変更しません。先に単一仕訳で登録した仕訳も、仕訳帳の詳細ボタンから編集して複合仕訳にすれば、その編集行で計算できます。
-        </p>
+          <article class="feature" id="feature-rule-auto-checker">
+            <h3>ルール適用のみチェック</h3>
+            <p class="lead">
+              「続きを表示」を自動で展開してから、自動仕訳ルールで勘定科目が割り当てられた行だけをまとめて選択します。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>連携サービスから入力（/transaction_journals）</dd>
+              </div>
+              <div>
+                <dt>操作方法</dt>
+                <dd>「ルール適用のみチェック」ボタンをクリック → 自動仕訳ルールで勘定科目が割り当てられた行がまとめて選択される</dd>
+              </div>
+            </dl>
+            <p>
+              AI推論アイコンのある行・未設定の行・選択できない行は対象外で、既に選択済みの行はそのまま維持されます。選択はボタンを押したときだけ実行され、仕訳の登録・保存は行いません。
+            </p>
+            <details class="more">
+              <summary>展開の上限と ON/OFF</summary>
+              <p>
+                展開は最大5回、待機は全体で最大15秒です。上限に達した場合は表示済みの対象行を選択し、続きを手動で表示して再実行するよう案内します。ポップアップの「ルール適用のみチェック」チェックボックスでボタンの表示を ON/OFF できます（デフォルト: ON）。
+              </p>
+            </details>
+          </article>
 
-        <div class="formula-block">
-          <p><strong>計算式</strong></p>
-          <p>手取り率: <code>1 − 15.315% = 0.84685</code></p>
-          <p>受取利息（総額）: <code>入金額 ÷ 0.84685（切り捨て）</code></p>
-          <p>源泉所得税額: <code>受取利息総額 − 入金額</code></p>
-        </div>
+          <a class="back-to-top" href="#top">↑ ページの先頭へ</a>
+        </section>
 
-        <img
-          src="./mfca-labs-interest-calculator-1280x800.png"
-          alt="受取利息の自動計算 — 利息計算ボタンの表示画面"
-          class="screenshot"
-        />
-        <p class="screenshot-caption">利息の計算ボタンが表示されます</p>
+        <!-- ③ コピー・まとめて開く -->
+        <section class="page-section" id="group-copy" aria-labelledby="group-copy-title">
+          <h2 id="group-copy-title">コピー・まとめて開く</h2>
+          <p class="group-lead">仕訳や科目リンクを、他のツールや別タブへ持ち出す作業を助けます。</p>
 
-      </section>
+          <article class="feature" id="feature-journal-copy">
+            <h3>仕訳のコピー</h3>
+            <p class="lead">
+              仕訳の内容を、相手勘定つきの整形テキストでコピーできます。コピーアイコンで 1 行ずつ、「仕訳のテキスト化」で複数行をまとめてコピーします。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>仕訳一覧（/transaction_journals）・仕訳帳（/books）・総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）・振替伝票（/journal_entry）</dd>
+              </div>
+              <div>
+                <dt>1行コピー</dt>
+                <dd>各行の⋮付近に表示されるコピーアイコンをクリック（前期繰越など対象外行を除く）</dd>
+              </div>
+              <div>
+                <dt>複数行をまとめて</dt>
+                <dd>「仕訳のテキスト化」トグルをONにして行をクリック選択（Shiftで範囲選択可）→ 右下バッジの「N件を2行コピー」または「N件を1行コピー」をクリック</dd>
+              </div>
+            </dl>
+            <p>
+              デフォルトでは MF クラウド会計本来の操作感をそのまま維持し、明示的なトリガー（コピーアイコン・仕訳のテキスト化トグル）を操作したときのみ有効になります。
+            </p>
+            <figure class="shot">
+              <img
+                src="./mfca-labs-journal-copy-1280x800.png"
+                alt="仕訳帳で複数行を選択し右下に「N件を2行コピー・N件を1行コピー」バッジが表示された画面"
+                width="1280"
+                height="800"
+                loading="lazy"
+              />
+              <figcaption>仕訳帳で複数行を選択し「N件を2行コピー」または「N件を1行コピー」で一括整形コピー。行をクリック（Shift+クリックで範囲選択）して右下バッジを押すだけです</figcaption>
+            </figure>
+            <figure class="shot">
+              <img
+                src="./mfca-labs-journal-copy-ledger-1280x800.png"
+                alt="補助元帳で2件を選択し「N件を2行コピー・N件を1行コピー」バッジと相手勘定科目列が表示された画面"
+                width="1280"
+                height="800"
+                loading="lazy"
+              />
+              <figcaption>補助元帳でも同様に仕訳のテキスト化が可能（相手勘定つき整形）。仕訳一覧・仕訳帳・総勘定元帳・補助元帳・振替伝票の全5画面に対応しています</figcaption>
+            </figure>
 
-      <!-- 機能詳細②-2: 源泉税の計算（報酬・配当） -->
-      <section class="section" id="feature-withholding">
-        <h2>源泉税の計算（報酬・配当）</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）の展開行、仕訳帳（/books）の編集行</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">起動タイミング</span>
-            <span class="feature-meta-value">借方が「支払報酬」「支払手数料」、または貸方が「受取配当金」の行</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          勘定科目セルの下に、種類を選ぶドロップダウンと「源泉税を計算」ボタンが表示されます。振込額（手取り額）を入力してボタンをクリックすると、総額と源泉税を割り戻して金額欄へ反映します。選んだ種類は勘定科目ごとに記憶されます。ドロップダウン横の「?」にカーソルを合わせると、税率・計算式と今回の計算結果を確認できます。摘要や勘定科目は変更しません。
-        </p>
+            <details class="more">
+              <summary>1行コピー</summary>
+              <p>
+                各行の⋮（メニュー）付近に表示されるコピーアイコンをクリックすると、その行の仕訳内容をクリップボードへコピーします。コピー後はアイコンが「✓」に変わり、2秒後に自動復帰します。
+              </p>
+            </details>
+            <details class="more">
+              <summary>仕訳のテキスト化（複数行一括）</summary>
+              <p>
+                上部の「仕訳のテキスト化」トグルをONにするとモードが起動します。行をクリックして選択（Shift+クリックで範囲選択も可能）し、右下バッジの2つのボタンで形式を選択してコピーします。複合仕訳グループもグループ単位で正しく処理されます。<kbd>Esc</kbd> を押すと選択クリア、選択なし状態でもう一度 <kbd>Esc</kbd> を押すとモードを終了します。
+              </p>
+              <ul>
+                <li>「<strong>N件を2行コピー</strong>」は相手勘定でグルーピングし各明細を列挙する形式です（例: ▼現金 → 明細1・明細2）。</li>
+                <li>「<strong>N件を1行コピー</strong>」はグルーピングなし・単体コピーと同じ1行フォーマットを改行で並べる形式です。</li>
+              </ul>
+            </details>
+            <details class="more">
+              <summary>まとめ方（入金・出金ごと）</summary>
+              <p>
+                連携サービスから入力・総勘定元帳・補助元帳では、複数行を選択すると右下バッジの上に「まとめ方」の選択肢が表示されます。「入金・出金ごと」を選ぶと、同じ科目・同じ補助科目（連携サービスでは同じ口座）の括りを保ったまま、その中を入金と出金に分け、見出し付きの明細をコピーします（連携サービスでは金額のプラスを入金、マイナスを出金として分けます）。既定は「通常」で、1行コピーには適用されません。選んだまとめ方は同じタブ内で保持され、ページを再読み込みすると「通常」に戻ります。
+              </p>
+            </details>
+            <details class="more">
+              <summary>コピーフォーマット（相手勘定つき整形）</summary>
+              <ul>
+                <li>元帳系: <code>YYYY/MM/DD 相手勘定 摘要 金額 出金/入金</code></li>
+                <li>仕訳帳・振替伝票: <code>YYYY/MM/DD 借方科目／貸方科目 摘要 金額</code></li>
+                <li>仕訳一覧: <code>YYYY/MM/DD 金融機関 摘要 金額 出金/入金</code></li>
+              </ul>
+              <p>金額は円単位付きで出力されます。</p>
+            </details>
+            <details class="more">
+              <summary>仕訳Noをコピーに含める（オプション）</summary>
+              <p>
+                ポップアップの「仕訳Noをコピーに含める」チェックボックスをONにすると、コピー出力の日付の直後に仕訳番号が <code>仕訳No4942</code> の形式で挿入されます。仕訳帳・総勘定元帳・補助元帳・振替伝票の4画面に対応しています（仕訳一覧は対象外）。デフォルトはOFFです。
+              </p>
+            </details>
+          </article>
 
-        <div class="formula-block">
-          <p><strong>種類と源泉税（総額 G、1円未満切り捨て）</strong></p>
-          <p>一般の報酬: <code>G ≦ 100万円 → G × 10.21%</code>、<code>G &gt; 100万円 → 102,100円 + (G − 100万円) × 20.42%</code></p>
-          <p>司法書士等: <code>G ≦ 1万円 → 0円</code>、<code>G &gt; 1万円 → (G − 1万円) × 10.21%</code></p>
-          <p>上場株式の配当: <code>G × 15.315%</code></p>
-          <p>非上場・大口の配当: <code>G × 20.42%</code></p>
-          <p>振込額から総額を割り戻す式: <code>総額 − 源泉税 = 振込額</code>（成り立つ整数の総額が2つあるときは大きい方）</p>
-        </div>
+          <article class="feature" id="feature-trial-balance-link-opener">
+            <h3>科目リンクの一括オープン（ドラッグ選択）</h3>
+            <p class="lead">
+              試算表で <kbd>Cmd</kbd>（Mac）/ <kbd>Ctrl</kbd>（Win/Linux）を押しながら左ドラッグすると、範囲内の科目リンクをまとめて新しいタブで開きます。
+            </p>
+            <dl class="meta">
+              <div>
+                <dt>対象画面</dt>
+                <dd>試算表（/balance_books/*）</dd>
+              </div>
+              <div>
+                <dt>操作方法</dt>
+                <dd><kbd>Cmd</kbd>（Mac）/ <kbd>Ctrl</kbd>（Win/Linux）を押しながら左ドラッグ → ボタンを離すと範囲内の科目リンクをまとめて新しいタブで開く</dd>
+              </div>
+            </dl>
+            <p>
+              修飾キー（<kbd>Cmd</kbd>/<kbd>Ctrl</kbd>）なしの通常クリック・テキスト選択・通常ドラッグには一切影響せず、MF クラウド会計本来の操作感を維持します。開くのは MF クラウド会計内のリンクだけで、他のサイトへのリンクは対象外です。
+            </p>
+            <details class="more">
+              <summary>ドラッグ中の表示と確認ダイアログ</summary>
+              <p>
+                ドラッグ中は半透明の青系矩形オーバーレイが表示され、範囲内に入ったリンク（<code>&lt;a href&gt;</code>）がリアルタイムでハイライトされます。矩形の右下には選択件数バッジ（「N 件」）が表示されます。ドラッグを完了してボタンを離した瞬間に、選択されたすべてのリンクがまとめて新しいタブで開きます（ドラッグ中に順次開くのではなく、リリース時に一括オープン）。
+              </p>
+              <p>
+                10 件を超えるリンクが範囲に含まれる場合は、件数を伝える確認ダイアログを表示してから一括オープンします。ポップアップの「科目リンクの一括オープン（ドラッグ選択）」チェックボックスで ON/OFF を切り替えられます（デフォルト: ON）。
+              </p>
+            </details>
+            <!-- TODO: スクリーンショットを追加する（mfca-labs-trial-balance-link-opener-1280x800.png が未作成だったため、壊れた画像参照を外した） -->
+          </article>
 
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">支払報酬・支払手数料</span>
-            <span class="feature-meta-value">種類: 一般の報酬／司法書士等。振込額は貸方1行目から読み、総額を借方1行目、源泉税を貸方2行目へ反映</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">受取配当金</span>
-            <span class="feature-meta-value">種類: 上場株式／非上場・大口。振込額は借方1行目から読み、総額を貸方1行目、源泉税を借方2行目へ反映</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          2行目の勘定科目（預り金・法人税等など）は問いません。2行目の金額欄がない場合は、何も反映せずエラーを表示します（司法書士等で源泉税が0円になる場合は、総額のみ反映します）。ポップアップの「源泉税の計算（報酬・配当）」チェックボックスで ON/OFF できます（デフォルト: ON）。
-        </p>
-      </section>
+          <a class="back-to-top" href="#top">↑ ページの先頭へ</a>
+        </section>
 
-      <!-- 機能詳細③: 摘要の検索ボタン -->
-      <section class="section" id="feature-search">
-        <h2>摘要の検索ボタン</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">起動タイミング</span>
-            <span class="feature-meta-value">常時表示（各行の摘要セル付近）</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          連携サービスから入力の各行の摘要セル付近に「仕訳帳で検索」と「Google 検索」ボタンが表示されます。「仕訳帳で検索」は摘要テキストで絞り込み検索します。「Google 検索」は同じテキストで Google 検索を開きます。
-        </p>
-        <img
-          src="./mfca-labs-linked-services-input-1280x800.png"
-          alt="摘要の検索ボタン — 各行に仕訳帳で検索・Google検索ボタンが表示された画面"
-          class="screenshot"
-        />
-        <p class="screenshot-caption">各行の摘要セル付近に「仕訳帳」「Google」ボタンが表示されます</p>
-      </section>
+        <!-- 重要事項のご案内 -->
+        <section class="notice" id="notice" aria-labelledby="notice-title">
+          <h2 id="notice-title">本ツールに関する重要事項のご案内</h2>
 
-      <section class="section" id="feature-amount">
-        <h2>金額の合計・コピー</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">仕訳帳（/books）・総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">操作方法</span>
-            <span class="feature-meta-value">右下の「合計/差分」ボタンでモードON → 金額セルをクリック/ドラッグ選択（Shift+クリックで同列範囲選択・Ctrl/Cmd でトグル追加） → 合計または差分をダブルクリックでコピー</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          仕訳帳・総勘定元帳・補助元帳の画面右下に「合計/差分」ボタンが常駐します。通常時はクラウド会計本来の操作感を維持し、ボタンをクリックした時のみ金額選択モードがONになります。モード中に金額セルをクリック/ドラッグすると選択中の合計金額と件数がリアルタイムで表示され、合計の数値をダブルクリックするとクリップボードへコピーされます。Esc を1回押すと選択クリア、選択なし状態で Esc を押すとモード終了です。
-        </p>
-        <p class="section-desc">
-          バッジ内のセグメントコントロール（[合計|差分]）をクリックすると合計⇄差分を切替できます。差分表示では借方基準の符号付き差額（例: 差 +¥600（5件））を表示し、ダブルクリックで差額の絶対値をコピーします。起点セルをクリック後、Shift+クリックで同列の起点〜終点間を一括選択できます。Ctrl（Mac は Cmd）+クリックで既存の選択を保持したまま個別セルをトグル追加/除外することもできます（Shift+クリックと併存）。
-        </p>
-        <img
-          src="./mfca-labs-amount-total-button-1280x800.png"
-          alt="金額の合計・コピー — 右下のバッジに合計/差分とコピー機能が表示された画面"
-          class="screenshot"
-        />
-        <p class="screenshot-caption">右下の「合計/差分」ボタンでモードON → 金額をクリック/ドラッグ選択 → 合計または差分をダブルクリックでクリップボードへコピー</p>
-      </section>
+          <h3>1. 本ツールの位置づけについて</h3>
+          <p>
+            本ツールは株式会社キャシュモが開発したもので、マネーフォワード（MF）社の公式サービスではありません。将来的にMF本体への機能統合を検討する可能性はありますが、現時点では外部ツールとしての提供となります。
+          </p>
 
-      <!-- 機能詳細⑤: 仕訳のコピー -->
-      <section class="section" id="feature-journal-copy">
-        <h2>仕訳のコピー</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">仕訳一覧（/transaction_journals）・仕訳帳（/books）・総勘定元帳（/books/general_ledger）・補助元帳（/books/subsidiary_ledger）・振替伝票（/journal_entry）</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">操作方法（1行コピー）</span>
-            <span class="feature-meta-value">各行の⋮付近に表示されるコピーアイコンをクリック（前期繰越など対象外行を除く）</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">操作方法（仕訳のテキスト化）</span>
-            <span class="feature-meta-value">「仕訳のテキスト化」トグルをONにして行をクリック選択（Shiftで範囲選択可）→ 右下バッジの「N件を2行コピー」または「N件を1行コピー」をクリック</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">オプション（仕訳No）</span>
-            <span class="feature-meta-value">ポップアップの「仕訳Noをコピーに含める」をONにするとコピー出力に仕訳番号を挿入（例: 仕訳No4942）。仕訳帳・総勘定元帳・補助元帳・振替伝票に対応（デフォルト: OFF）</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          全5画面に対応した仕訳コピー機能です。デフォルトでは MF クラウド会計本来の操作感をそのまま維持し、明示的なトリガー（コピーアイコン・仕訳のテキスト化トグル）を操作したときのみ有効になります。
-        </p>
-        <p class="section-desc">
-          <strong>1行コピー</strong>: 各行の⋮（メニュー）付近に表示されるコピーアイコンをクリックすると、その行の仕訳内容をクリップボードへコピーします。コピー後はアイコンが「✓」に変わり、2秒後に自動復帰します。
-        </p>
-        <p class="section-desc">
-          <strong>仕訳のテキスト化（複数行一括）</strong>: 上部の「仕訳のテキスト化」トグルをONにするとモードが起動します。行をクリックして選択（Shift+クリックで範囲選択も可能）し、右下バッジの2つのボタンで形式を選択してコピーします。複合仕訳グループもグループ単位で正しく処理されます。Esc を押すと選択クリア、選択なし状態でもう一度 Esc を押すとモードを終了します。<br>「<strong>N件を2行コピー</strong>」は相手勘定でグルーピングし各明細を列挙する形式（例: ▼現金 → 明細1・明細2）。「<strong>N件を1行コピー</strong>」はグルーピングなし・単体コピーと同じ1行フォーマットを改行で並べる形式です。
-        </p>
-        <p class="section-desc">
-          <strong>まとめ方（入金・出金ごと）</strong>: 連携サービスから入力・総勘定元帳・補助元帳では、複数行を選択すると右下バッジの上に「まとめ方」の選択肢が表示されます。「入金・出金ごと」を選ぶと、同じ科目・同じ補助科目（連携サービスでは同じ口座）の括りを保ったまま、その中を入金と出金に分け、見出し付きの明細をコピーします（連携サービスでは金額のプラスを入金、マイナスを出金として分けます）。既定は「通常」で、1行コピーには適用されません。選んだまとめ方は同じタブ内で保持され、ページを再読み込みすると「通常」に戻ります。
-        </p>
-        <p class="section-desc">
-          <strong>コピーフォーマット（相手勘定つき整形）</strong>: 元帳系は <code>YYYY/MM/DD 相手勘定 摘要 金額 出金/入金</code>、仕訳帳・振替伝票は <code>YYYY/MM/DD 借方科目／貸方科目 摘要 金額</code>、仕訳一覧は <code>YYYY/MM/DD 金融機関 摘要 金額 出金/入金</code> の形式で出力されます（金額は円単位付き）。
-        </p>
-        <p class="section-desc">
-          <strong>仕訳Noをコピーに含める（オプション）</strong>: ポップアップの「仕訳Noをコピーに含める」チェックボックスをONにすると、コピー出力の日付の直後に仕訳番号が <code>仕訳No4942</code> の形式で挿入されます。仕訳帳・総勘定元帳・補助元帳・振替伝票の4画面に対応しています（仕訳一覧は対象外）。デフォルトはOFFです。
-        </p>
-        <img
-          class="screenshot"
-          src="mfca-labs-journal-copy-1280x800.png"
-          alt="仕訳帳で複数行を選択し右下に「N件を2行コピー・N件を1行コピー」バッジが表示された画面"
-          loading="lazy"
-        />
-        <p class="screenshot-caption">仕訳帳で複数行を選択し「N件を2行コピー」または「N件を1行コピー」で一括整形コピー。行をクリック（Shift+クリックで範囲選択）して右下バッジを押すだけです</p>
-        <img
-          class="screenshot"
-          src="mfca-labs-journal-copy-ledger-1280x800.png"
-          alt="補助元帳で2件を選択し「N件を2行コピー・N件を1行コピー」バッジと相手勘定科目列が表示された画面"
-          loading="lazy"
-        />
-        <p class="screenshot-caption">補助元帳でも同様に仕訳のテキスト化が可能（相手勘定つき整形）。仕訳一覧・仕訳帳・総勘定元帳・補助元帳・振替伝票の全5画面に対応しています</p>
-      </section>
+          <h3>2. リリースにあたっての確認状況</h3>
+          <p>
+            本リリースの際、MF社のCISO室による技術的な確認を受けているほか、MF社の法務部門からも一定の条件（免責事項等）のもとで、外部への公表について了解を得ております。ただし、MF本体の仕様変更に追従できず、予告なく機能が利用できなくなる可能性がある点はあらかじめご了承ください。
+          </p>
 
-      <!-- 機能詳細⑥: 科目リンクの一括オープン（ドラッグ選択） -->
-      <section class="section" id="feature-trial-balance-link-opener">
-        <h2>科目リンクの一括オープン（ドラッグ選択）</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">試算表（/balance_books/*）</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">操作方法</span>
-            <span class="feature-meta-value">Cmd（Mac）/ Ctrl（Win/Linux）を押しながら左ドラッグ → ボタンを離すと範囲内の科目リンクをまとめて新しいタブで開く</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          試算表の科目リンク（<code>&lt;a href&gt;</code>）を複数まとめて新しいタブで開ける機能です。Cmd（Mac）または Ctrl（Win/Linux）を押しながら左ドラッグすると、ドラッグ中は半透明の青系矩形オーバーレイが表示され、範囲内に入ったリンクがリアルタイムでハイライトされます。矩形の右下には選択件数バッジ（「N 件」）が表示されます。ドラッグを完了してボタンを離した瞬間に、選択されたすべてのリンクがまとめて新しいタブで開きます（ドラッグ中に順次開くのではなく、リリース時に一括オープン）。
-        </p>
-        <p class="section-desc">
-          10 件を超えるリンクが範囲に含まれる場合は、件数を伝える確認ダイアログを表示してから一括オープンします。修飾キー（Cmd/Ctrl）なしの通常クリック・テキスト選択・通常ドラッグには一切影響せず、MF クラウド会計本来の操作感を維持します。ポップアップの「科目リンクの一括オープン（ドラッグ選択）」チェックボックスで ON/OFF を切り替えられます（デフォルト: ON）。
-        </p>
-        <img
-          src="./mfca-labs-trial-balance-link-opener-1280x800.png"
-          alt="科目リンクの一括オープン — 試算表でドラッグ範囲内の科目リンクがハイライトされ、右下に選択件数バッジが表示された画面"
-          class="screenshot"
-          loading="lazy"
-        />
-        <p class="screenshot-caption">Cmd/Ctrl+左ドラッグで範囲を指定すると科目リンクがハイライト。ドラッグ完了時にまとめて新しいタブで開きます</p>
-      </section>
+          <h3>3. セキュリティ・サポート面</h3>
+          <ul>
+            <li><strong>セキュリティ:</strong> 処理はすべて利用者のPC内で完結し、入力データ等が外部サーバーへアップロードされることはありません。</li>
+            <li><strong>サポート:</strong> 操作方法のレクチャーや不具合対応のサポート窓口は設けておりません。もしお気づきの点があれば、MF社の担当者を通じてフィードバックをいただけますと幸いです。</li>
+          </ul>
 
-      <!-- 機能詳細⑦: ルール適用のみチェック -->
-      <section class="section" id="feature-rule-auto-checker">
-        <h2>ルール適用のみチェック</h2>
-        <div class="feature-meta">
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">対象画面</span>
-            <span class="feature-meta-value">連携サービスから入力（/transaction_journals）</span>
-          </div>
-          <div class="feature-meta-row">
-            <span class="feature-meta-label">操作方法</span>
-            <span class="feature-meta-value">「ルール適用のみチェック」ボタンをクリック → 自動仕訳ルールで勘定科目が割り当てられた行がまとめて選択される</span>
-          </div>
-        </div>
-        <p class="section-desc">
-          「続きを表示」を自動で展開してから、自動仕訳ルールで勘定科目が割り当てられた行をまとめて選択します。AI推論アイコンのある行・未設定の行・選択できない行は対象外で、既に選択済みの行はそのまま維持されます。
-        </p>
-        <p class="section-desc">
-          展開は最大5回、待機は全体で最大15秒です。上限に達した場合は表示済みの対象行を選択し、続きを手動で表示して再実行するよう案内します。選択はボタンを押したときだけ実行され、仕訳の登録・保存は行いません。ポップアップの「ルール適用のみチェック」チェックボックスでボタンの表示を ON/OFF できます（デフォルト: ON）。
-        </p>
-      </section>
-
-      <!-- ▼ 機能詳細をここに追加（feature-cards のカードと対応させる） -->
-
-      <!-- 重要事項のご案内 -->
-      <div class="important-notice">
-        <h2>本ツールに関する重要事項のご案内</h2>
-
-        <h3>1. 本ツールの位置づけについて</h3>
-        <p>
-          本ツールは株式会社キャシュモが開発したもので、マネーフォワード（MF）社の公式サービスではありません。将来的にMF本体への機能統合を検討する可能性はありますが、現時点では外部ツールとしての提供となります。
-        </p>
-
-        <h3>2. リリースにあたっての確認状況</h3>
-        <p>
-          本リリースの際、MF社のCISO室による技術的な確認を受けているほか、MF社の法務部門からも一定の条件（免責事項等）のもとで、外部への公表について了解を得ております。ただし、MF本体の仕様変更に追従できず、予告なく機能が利用できなくなる可能性がある点はあらかじめご了承ください。
-        </p>
-
-        <h3>3. セキュリティ・サポート面</h3>
-        <ul>
-          <li><strong>セキュリティ:</strong> 処理はすべて利用者のPC内で完結し、入力データ等が外部サーバーへアップロードされることはありません。</li>
-          <li><strong>サポート:</strong> 操作方法のレクチャーや不具合対応のサポート窓口は設けておりません。もしお気づきの点があれば、MF社の担当者を通じてフィードバックをいただけますと幸いです。</li>
-        </ul>
-
-        <h3>4. 今後の仕様変更・提供停止の可能性</h3>
-        <p>
-          利便性の向上を優先するため、今後も随時仕様変更を行ってまいります。その際、過去バージョンとの互換性を維持しない変更や、予告なく提供を停止する可能性もございます。継続的な動作を保証するものではない点をご理解の上、ご活用いただければと思います。
-        </p>
-      </div>
-
-    </main>
-
+          <h3>4. 今後の仕様変更・提供停止の可能性</h3>
+          <p>
+            利便性の向上を優先するため、今後も随時仕様変更を行ってまいります。その際、過去バージョンとの互換性を維持しない変更や、予告なく提供を停止する可能性もございます。継続的な動作を保証するものではない点をご理解の上、ご活用いただければと思います。
+          </p>
+        </section>
+      </main>
+    </div>
   </body>
 </html>
