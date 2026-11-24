@@ -616,3 +616,58 @@ main {
     transition: none;
   }
 }
+
+/* ---------- 9 機能一覧の表 ---------- */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.feature-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.feature-table th,
+.feature-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.feature-table thead th {
+  background: var(--surface);
+  white-space: nowrap;
+}
+
+.feature-table tbody th {
+  font-weight: 600;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.status-done {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.status-todo {
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

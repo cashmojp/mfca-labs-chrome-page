@@ -43,6 +43,7 @@
         <p class="toc-title">目次</p>
         <ol>
           <li><a href="#features">できること</a></li>
+          <li><a href="#feature-list">機能一覧</a></li>
           <li><a href="#setup">インストール後の設定</a></li>
           <li class="toc-group">
             <a href="#group-input">入力を助ける</a>
@@ -177,6 +178,98 @@
             </div>
           </div>
           <!-- 機能カードを追加するときは、該当グループの feature-cards に追加し、目次（nav.toc）と機能の説明（下の各セクション）にも対応する項目を足す -->
+        </section>
+
+        <!-- 機能一覧（追加されたバージョンと状態）。追加バージョンは mfca-labs-chrome の CHANGELOG.md に合わせる -->
+        <section class="page-section" id="feature-list" aria-labelledby="feature-list-title">
+          <h2 id="feature-list-title">機能一覧</h2>
+          <p>
+            各機能が追加されたバージョンと、いまの状態です。「未実装」の機能は、次のバージョンで追加する予定のもので、まだ Chrome ウェブストアの版では使えません。
+          </p>
+          <div class="table-wrap">
+            <table class="feature-table">
+              <caption class="visually-hidden">機能ごとの追加バージョンと状態</caption>
+              <thead>
+                <tr>
+                  <th scope="col">機能</th>
+                  <th scope="col">追加バージョン</th>
+                  <th scope="col">状態</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><a href="#feature-date">日付ショートカット</a></th>
+                  <td>1.1.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-interest">受取利息の自動計算</a></th>
+                  <td>1.0.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-withholding">源泉税の計算（報酬・配当）</a></th>
+                  <td>1.13.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-search">摘要の検索ボタン</a></th>
+                  <td>1.2.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-amount">金額の合計・コピー</a></th>
+                  <td>1.4.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-journal-copy">仕訳のコピー</a></th>
+                  <td>1.6.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-trial-balance-link-opener">科目リンクの一括オープン</a></th>
+                  <td>1.7.17</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-rule-auto-checker">ルール適用のみチェック</a></th>
+                  <td>1.11.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-evidence-panel">証憑サイドパネル</a></th>
+                  <td>1.14.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="#feature-month-end-marker">月が変わる行の目印</a></th>
+                  <td>1.14.0</td>
+                  <td><span class="status status-done">実装済み</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">和暦の併記（会計年度）</th>
+                  <td>2.1.0</td>
+                  <td><span class="status status-todo">未実装（2.1.0 で追加予定）</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">過去仕訳パネル（摘要・金額で探す）</th>
+                  <td>2.1.0</td>
+                  <td><span class="status status-todo">未実装（2.1.0 で追加予定）</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">全件合計（全ページ分の合計）</th>
+                  <td>2.1.0</td>
+                  <td><span class="status status-todo">未実装（2.1.0 で追加予定）</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">補助科目をその場で作る</th>
+                  <td>2.1.0</td>
+                  <td><span class="status status-todo">未実装（2.1.0 で追加予定）</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <!-- インストール後の設定 -->
